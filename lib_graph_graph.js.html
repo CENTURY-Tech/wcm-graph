@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/graph/graph.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/graph/graph.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+const R = require("ramda");
+/**
+ * A weakmap of the depedency graph nodes.
+ *
+ * @private
+ */
+exports.__nodes = new WeakMap();
+const getNodes = (key) => exports.__nodes.get(key);
+const setNodes = (key, value) => void exports.__nodes.set(key, value);
+/**
+ * A weakmap of the depedency graph relations.
+ *
+ * @private
+ */
+exports.__relations = new WeakMap();
+const getRelations = (key) => exports.__relations.get(key);
+const setRelations = (key, value) => void exports.__relations.set(key, value);
+/**
+ * A base class responsible for weakmap initialisation. This ensures that upstream classes are able to use curried
+ * methods defined as properties that interface with the weakmaps.
+ *
+ * @class
+ */
+class BaseGraph {
+    constructor() {
+        setNodes(this, {});
+        setRelations(this, {});
+    }
+}
+exports.BaseGraph = BaseGraph;
+/**
+ * A class built to manage the data relating to inter-dependencies in a project.
+ *
+ * @class
+ * @extends BaseGraph
+ */
+class DependencyGraph extends BaseGraph {
+    constructor() {
+        super(...arguments);
+        /**
+         * Retrieve the data relating to the node with the dependency name provided. If no node exists with the depedency name
+         * provided an error will be thrown.
+         *
+         * @function
+         *
+         * @param {String} name - The name of the dependency
+         *
+         * @returns {Any} Any data stored against the dependency graph at the node with the depedency name provided
+         */
+        this.getNode = (R.ifElse(nodeExists(this), getNode(this), noNodeFoundErr));
+        /**
+         * Check to see whether or not the dependency graph contains a node with the dependency name provided.
+         *
+         * @function
+         *
+         * @param {String} name - The name of the dependency
+         *
+         * @returns {Boolean} Whether or not the graph has a dependency with the name provided
+         */
+        this.hasNode = (nodeExists(this));
+        /**
+         * Check to see whether or not a relationship exists from the 'from' node to the 'to' node.
+         *
+         * @function
+         *
+         * @param {String} from - The name of the dependant
+         * @param {String} to   - The name of the dependency
+         *
+         * @returns {Boolean} Whether or not a relationship exists from the 'from' node to the 'to' node
+         */
+        this.hasDependency = (relationExists(this));
+        /**
+         * Retrieve the list of nodes that the node with the provided depedency name depends upon.
+         *
+         * @function
+         *
+         * @param {String} of - The name of the depedency
+         *
+         * @returns {String[]} A list of nodes that the node with the provided depedency name depends upon
+         */
+        this.listDependencies = (getRelation(this));
+        /**
+         * Retrieve the list of nodes that rely upon the node with the provided depedency name.
+         *
+         * @function
+         *
+         * @param {String} of - The name of the depedency
+         *
+         * @returns {String[]} A list of nodes that rely upon the node with the provided depedency name
+         */
+        this.listDependants = R.curryN(1, (of) => R.keys(R.filter(R.contains(of), getRelations(this))));
+    }
+    /**
+     * Add a node with the dependency name provided to the dependency graph, with the data provided. If a node with the
+     * dependency name provided already exists on the dependency graph an error will be thrown.
+     *
+     * @param {String} name - The name of the dependency
+     * @param {Any}    data - The data to map to the dependency
+     *
+     * @returns {Void}
+     */
+    addNode(name, data) {
+        R.when(nodeExists(this), nodeAlreadyExistsErr)(name);
+        getNodes(this)[name] = data;
+        getRelations(this)[name] = [];
+    }
+    /**
+     * Create a relationship from the depedency name provided as the first argument, to the depedency name provided as the
+     * second argument. If either of the depedency names cannot be found in the nodes list an error will be thrown.
+     *
+     * @param {String} from - The name of the dependant
+     * @param {String} to   - The name of the dependency
+     *
+     * @returns {Void}
+     */
+    markDependency(from, to) {
+        R.map(R.unless(nodeExists(this), noNodeFoundErr))([from, to]);
+        getRelation(this)(from).push(to);
+    }
+}
+/**
+ * A static method that will stringify key depedency metadata into a valid node name.
+ *
+ * @function
+ *
+ * @param {Object} opts      - The function options
+ * @param {String} opts.name - The depedency name
+ * @param {String} opts.name - the depedency version
+ *
+ * @returns {String} A stringified depedency name
+ */
+DependencyGraph.stringifyDependencyName = (R.compose(R.join("@"), R.values));
+/**
+ * A static method that will stringify a depedency name into a valid node name.
+ *
+ * @function
+ *
+ * @param {String} name - The stringified depedency name
+ *
+ * @returns {Object} A parsed depedency name
+ */
+DependencyGraph.parseDependencyName = (R.compose(R.fromPairs, R.transpose, R.curry(R.pair)(["name", "version"]), R.split(/@/)));
+exports.DependencyGraph = DependencyGraph;
+/**
+ * A curried method to retrieve the data stored against a node with a specific depedency name.
+ *
+ * @private
+ * @param {Any} scope - The scope against which the nodes are mapped
+ * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
+ */
+function getNode(scope) {
+    return R.flip(R.prop)(getNodes(scope));
+}
+/**
+ * A curried method to check the existances of a node with a specific depedency name.
+ *
+ * @private
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
+ */
+function nodeExists(scope) {
+    return R.flip(R.has)(getNodes(scope));
+}
+/**
+ * A curried method to retrieve the list of relations stored against a specific depedency name.
+ *
+ * @private
+ *
+ * @param {Any} scope - The scope against which the relations are mapped
+ *
+ * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
+ */
+function getRelation(scope) {
+    return R.flip(R.prop)(getRelations(scope));
+}
+/**
+ * A curried method to check the existances of a relation between two nodes.
+ *
+ * @private
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will determine whether or not a relation between to nodes exists
+ */
+function relationExists(scope) {
+    return (a, b) => {
+        return R.contains(b, getRelation(scope)(a) || []);
+    };
+}
+/**
+ * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
+ * depedency graph.
+ *
+ * @private
+ *
+ * @param {String} name - The name of the dependency
+ *
+ * @returns {Never}
+ */
+function nodeAlreadyExistsErr(name) {
+    throw Error(`A node with the name '${name}' already exists`);
+}
+/**
+ * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
+ * depedency graph.
+ *
+ * @private
+ *
+ * @param {String} name - The name of the dependency
+ *
+ * @returns {Never}
+ */
+function noNodeFoundErr(name) {
+    throw Error(`No node with the name '${name}' has been added`);
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BaseGraph.html">BaseGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#generateDeclaredDependenciesGraph">generateDeclaredDependenciesGraph</a></li><li><a href="global.html#generateImportedDependenciesGraph">generateImportedDependenciesGraph</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Feb 06 2017 16:43:24 GMT+0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
