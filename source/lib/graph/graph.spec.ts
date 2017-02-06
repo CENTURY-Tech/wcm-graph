@@ -104,6 +104,32 @@ describe("Graph", () => {
           dependencyGraph.markDependency("foo", "bar");
         }, "No node with the name 'bar' has been added");
       });
+
+      it("should add 'to' to the relations array of 'from'", () => {
+        graph.__nodes.get(dependencyGraph).foo = "bar";
+        graph.__nodes.get(dependencyGraph).bar = "baz";
+        graph.__relations.get(dependencyGraph).foo = [];
+        dependencyGraph.markDependency("foo", "bar");
+        assert.deepEqual(graph.__relations.get(dependencyGraph).foo, ["bar"]);
+      });
+    });
+
+    /**
+     * Tests for the method "hasDependency".
+     */
+    describe("Method: 'hasDependency'", () => {
+      it("should accept 2 parameters", () => {
+        assert.strictEqual(dependencyGraph.hasDependency.length, 2);
+      });
+
+      it("should return 'true' when a relationship between the 'from' and 'to' nodes is found", () => {
+        graph.__relations.get(dependencyGraph).foo = ["bar"];
+        assert.equal(dependencyGraph.hasDependency("foo", "bar"), true);
+      });
+
+      it("should return 'false' when no relationship between the 'from' and 'to' nodes is found", () => {
+        assert.equal(dependencyGraph.hasDependency("foo", "bar"), false);
+      });
     });
 
     /**
@@ -113,6 +139,11 @@ describe("Graph", () => {
       it("should accept 1 parameter", () => {
         assert.strictEqual(dependencyGraph.listDependencies.length, 1);
       });
+
+      it("should return the dependencies of the 'of' node", () => {
+        graph.__relations.get(dependencyGraph).foo = ["bar"];
+        assert.deepEqual(dependencyGraph.listDependencies("foo"), ["bar"]);
+      });
     });
 
     /**
@@ -121,6 +152,15 @@ describe("Graph", () => {
     describe("Method: 'listDependants'", () => {
       it("should accept 1 parameter", () => {
         assert.strictEqual(dependencyGraph.listDependants.length, 1);
+      });
+
+      it("should return the dependants of the 'of' node", () => {
+        graph.__relations.get(dependencyGraph).foo = ["bar"];
+        assert.deepEqual(dependencyGraph.listDependants("bar"), ["foo"]);
+      });
+
+      describe("against complex setup", () => {
+
       });
     });
   });

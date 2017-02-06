@@ -4,15 +4,15 @@ import * as R from "ramda";
  * A weakmap of the depedency graph nodes.
  */
 export const __nodes = new WeakMap();
-const getNodes = (key: any) => __nodes.get(key);
-const setNodes = (key: any, value: any) => __nodes.set(key, value);
+const getNodes = (key: any): Object => __nodes.get(key);
+const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
 
 /**
  * A weakmap of the depedency graph relations.
  */
 export const __relations = new WeakMap();
-const getRelations = (key: any) => __relations.get(key);
-const setRelations = (key: any, value: any) => __relations.set(key, value);
+const getRelations = (key: any): Object => __relations.get(key);
+const setRelations = (key: any, value: any): void => void __relations.set(key, value);
 
 /**
  * A curried method to retrieve the data stored against a node with a specific depedency name.
@@ -40,6 +40,15 @@ const getRelation = (scope: any): (name: string) => any => R.flip(R.prop)(getRel
  * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
  */
 const nodeExists = (scope: any): (name: string) => boolean => R.flip(R.has)(getNodes(scope));
+
+/**
+ * A curried method to check the existances of a relation between two nodes.
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will determine whether or not a relation between to nodes exists
+ */
+const relationExists = (scope: any): (from: string, to: string) => boolean => R.curry((from: string, to: string) => R.contains(to, getRelation(scope)(from) || []));
 
 /**
  * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
@@ -122,8 +131,8 @@ export class DependencyGraph extends BaseGraph {
    * Create a relationship from the depedency name provided as the first argument, to the depedency name provided as the
    * second argument. If either of the depedency names cannot be found in the nodes list an error will be thrown.
    *
-   * @param {String} name - The name of the dependant
-   * @param {String} name - The name of the dependency
+   * @param {String} from - The name of the dependant
+   * @param {String} to   - The name of the dependency
    *
    * @returns {Void}
    */
@@ -132,6 +141,18 @@ export class DependencyGraph extends BaseGraph {
 
     getRelation(this)(from).push(to);
   }
+
+  /**
+   * Check to see whether or not a relationship exists from the 'from' node to the 'to' node.
+   *
+   * @param {String} from - The name of the dependant
+   * @param {String} to   - The name of the dependency
+   *
+   * @returns {Boolean} Whether or not a relationship exists from the 'from' node to the 'to' node
+   */
+  hasDependency: (from: string, to: string) => boolean = (
+    relationExists(this)
+  );
 
   /**
    * Retrieve the list of nodes that the node with the provided depedency name depends upon.
@@ -144,8 +165,15 @@ export class DependencyGraph extends BaseGraph {
     getRelation(this)
   );
 
+  /**
+   * Retrieve the list of nodes that rely upon the node with the provided depedency name.
+   *
+   * @param {String} of - The name of the depedency
+   *
+   * @returns {String[]} A list of nodes that rely upon the node with the provided depedency name
+   */
   listDependants: (of: string) => string[] = (
-    R.map
+    R.curryN(1, (of: string) => R.keys(R.filter(R.contains(of), getRelations(this) as any[]))) as (x: string) => string[]
   );
 
 }
