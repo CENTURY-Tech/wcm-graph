@@ -15,62 +15,6 @@ const getRelations = (key: any): Object => __relations.get(key);
 const setRelations = (key: any, value: any): void => void __relations.set(key, value);
 
 /**
- * A curried method to retrieve the data stored against a node with a specific depedency name.
- *
- * @param {Any} scope - The scope against which the nodes are mapped
- *
- * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
- */
-const getNode = (scope: any): (name: string) => any => R.flip(R.prop)(getNodes(scope));
-
-/**
- * A curried method to check the existances of a node with a specific depedency name.
- *
- * @param {Any} scope - The scope against which the nodes are mapped
- *
- * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
- */
-const nodeExists = (scope: any): (name: string) => boolean => R.flip(R.has)(getNodes(scope));
-
-
-/**
- * A curried method to retrieve the list of relations stored against a specific depedency name.
- *
- * @param {Any} scope - The scope against which the relations are mapped
- *
- * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
- */
-const getRelation = (scope: any): (name: string) => any => R.flip(R.prop)(getRelations(scope));
-/**
- * A curried method to check the existances of a relation between two nodes.
- *
- * @param {Any} scope - The scope against which the nodes are mapped
- *
- * @returns {Function} A method that will determine whether or not a relation between to nodes exists
- */
-const relationExists = (scope: any): (from: string, to: string) => boolean => (a: string, b: string) => R.contains(b, getRelation(scope)(a) || []);
-
-/**
- * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
- * depedency graph.
- *
- * @param {String} name - The name of the dependency
- *
- * @returns {Never}
- */
-const nodeAlreadyExistsErr = (name: string): never => { throw Error(`A node with the name '${name}' already exists`); };
-
-/**
- * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
- * depedency graph.
- *
- * @param {String} name - The name of the dependency
- *
- * @returns {Never}
- */
-const noNodeFoundErr = (name: string): never => { throw Error(`No node with the name '${name}' has been added`); };
-
-/**
  * A base class responsible for weakmap initialisation. This ensures that upstream classes are able to use curried
  * methods defined as properties that interface with the weakmaps.
  */
@@ -176,4 +120,74 @@ export class DependencyGraph extends BaseGraph {
     R.curryN(1, (of: string) => R.keys(R.filter(R.contains(of), getRelations(this) as any[]))) as (x: string) => string[]
   );
 
+}
+
+/**
+ * A curried method to retrieve the data stored against a node with a specific depedency name.
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
+ */
+function getNode(scope: any): (name: string) => any {
+  return R.flip(R.prop)(getNodes(scope));
+}
+
+/**
+ * A curried method to check the existances of a node with a specific depedency name.
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
+ */
+function nodeExists(scope: any): (name: string) => boolean {
+  return R.flip(R.has)(getNodes(scope));
+}
+
+/**
+ * A curried method to retrieve the list of relations stored against a specific depedency name.
+ *
+ * @param {Any} scope - The scope against which the relations are mapped
+ *
+ * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
+ */
+function getRelation(scope: any): (name: string) => any {
+  return R.flip(R.prop)(getRelations(scope));
+}
+
+/**
+ * A curried method to check the existances of a relation between two nodes.
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will determine whether or not a relation between to nodes exists
+ */
+function relationExists(scope: any): (from: string, to: string) => boolean {
+  return (a: string, b: string) => {
+    return R.contains(b, getRelation(scope)(a) || []);
+  };
+}
+
+/**
+ * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
+ * depedency graph.
+ *
+ * @param {String} name - The name of the dependency
+ *
+ * @returns {Never}
+ */
+function nodeAlreadyExistsErr(name: string): never {
+  throw Error(`A node with the name '${name}' already exists`);
+}
+
+/**
+ * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
+ * depedency graph.
+ *
+ * @param {String} name - The name of the dependency
+ *
+ * @returns {Never}
+ */
+function noNodeFoundErr(name: string): never {
+  throw Error(`No node with the name '${name}' has been added`);
 }
