@@ -7,7 +7,7 @@
     "prebuild": "npm run lint",
     "build": "rm -rf dist && tsc",
     "predocs": "npm run build",
-    "docs": " rm -rf docs && jsdoc dist -r -d docs",
+    "docs": " jsdoc dist -r -d docs",
     "lint": "tslint --project . --fix",
     "pretest": "npm run build",
     "test": "mocha dist/**/*.spec.js"
