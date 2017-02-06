@@ -158,10 +158,6 @@ describe("Graph", () => {
         graph.__relations.get(dependencyGraph).foo = ["bar"];
         assert.deepEqual(dependencyGraph.listDependants("bar"), ["foo"]);
       });
-
-      describe("against complex setup", () => {
-
-      });
     });
   });
 });
