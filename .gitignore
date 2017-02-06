@@ -8,3 +8,4 @@ npm-debug.log
 
 # Ignore distribution files
 dist
+docs
