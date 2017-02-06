@@ -1,9 +1,14 @@
 import * as R from "ramda";
 
+/**
+ * An interface representing optional depedency metadata.
+ */
 export type DependencyName = { name: string, version: string };
 
 /**
  * A weakmap of the depedency graph nodes.
+ *
+ * @private
  */
 export const __nodes = new WeakMap();
 const getNodes = (key: any): Object => __nodes.get(key);
@@ -11,6 +16,8 @@ const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
 
 /**
  * A weakmap of the depedency graph relations.
+ *
+ * @private
  */
 export const __relations = new WeakMap();
 const getRelations = (key: any): Object => __relations.get(key);
@@ -19,6 +26,8 @@ const setRelations = (key: any, value: any): void => void __relations.set(key, v
 /**
  * A base class responsible for weakmap initialisation. This ensures that upstream classes are able to use curried
  * methods defined as properties that interface with the weakmaps.
+ *
+ * @class
  */
 export class BaseGraph {
 
@@ -31,6 +40,9 @@ export class BaseGraph {
 
 /**
  * A class built to manage the data relating to inter-dependencies in a project.
+ *
+ * @class
+ * @extends BaseGraph
  */
 export class DependencyGraph extends BaseGraph {
 
@@ -54,6 +66,8 @@ export class DependencyGraph extends BaseGraph {
    * Retrieve the data relating to the node with the dependency name provided. If no node exists with the depedency name
    * provided an error will be thrown.
    *
+   * @function
+   *
    * @param {String} name - The name of the dependency
    *
    * @returns {Any} Any data stored against the dependency graph at the node with the depedency name provided
@@ -64,6 +78,8 @@ export class DependencyGraph extends BaseGraph {
 
   /**
    * Check to see whether or not the dependency graph contains a node with the dependency name provided.
+   *
+   * @function
    *
    * @param {String} name - The name of the dependency
    *
@@ -91,6 +107,8 @@ export class DependencyGraph extends BaseGraph {
   /**
    * Check to see whether or not a relationship exists from the 'from' node to the 'to' node.
    *
+   * @function
+   *
    * @param {String} from - The name of the dependant
    * @param {String} to   - The name of the dependency
    *
@@ -103,6 +121,8 @@ export class DependencyGraph extends BaseGraph {
   /**
    * Retrieve the list of nodes that the node with the provided depedency name depends upon.
    *
+   * @function
+   *
    * @param {String} of - The name of the depedency
    *
    * @returns {String[]} A list of nodes that the node with the provided depedency name depends upon
@@ -114,6 +134,8 @@ export class DependencyGraph extends BaseGraph {
   /**
    * Retrieve the list of nodes that rely upon the node with the provided depedency name.
    *
+   * @function
+   *
    * @param {String} of - The name of the depedency
    *
    * @returns {String[]} A list of nodes that rely upon the node with the provided depedency name
@@ -124,6 +146,8 @@ export class DependencyGraph extends BaseGraph {
 
   /**
    * A static method that will stringify key depedency metadata into a valid node name.
+   *
+   * @function
    *
    * @param {Object} opts      - The function options
    * @param {String} opts.name - The depedency name
@@ -138,6 +162,8 @@ export class DependencyGraph extends BaseGraph {
   /**
    * A static method that will stringify a depedency name into a valid node name.
    *
+   * @function
+   *
    * @param {String} name - The stringified depedency name
    *
    * @returns {Object} A parsed depedency name
@@ -151,8 +177,8 @@ export class DependencyGraph extends BaseGraph {
 /**
  * A curried method to retrieve the data stored against a node with a specific depedency name.
  *
+ * @private
  * @param {Any} scope - The scope against which the nodes are mapped
- *
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
 function getNode(scope: any): (name: string) => any {
@@ -161,6 +187,8 @@ function getNode(scope: any): (name: string) => any {
 
 /**
  * A curried method to check the existances of a node with a specific depedency name.
+ *
+ * @private
  *
  * @param {Any} scope - The scope against which the nodes are mapped
  *
@@ -173,6 +201,8 @@ function nodeExists(scope: any): (name: string) => boolean {
 /**
  * A curried method to retrieve the list of relations stored against a specific depedency name.
  *
+ * @private
+ *
  * @param {Any} scope - The scope against which the relations are mapped
  *
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
@@ -183,6 +213,8 @@ function getRelation(scope: any): (name: string) => any {
 
 /**
  * A curried method to check the existances of a relation between two nodes.
+ *
+ * @private
  *
  * @param {Any} scope - The scope against which the nodes are mapped
  *
@@ -198,6 +230,8 @@ function relationExists(scope: any): (from: string, to: string) => boolean {
  * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
  * depedency graph.
  *
+ * @private
+ *
  * @param {String} name - The name of the dependency
  *
  * @returns {Never}
@@ -209,6 +243,8 @@ function nodeAlreadyExistsErr(name: string): never {
 /**
  * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
  * depedency graph.
+ *
+ * @private
  *
  * @param {String} name - The name of the dependency
  *
