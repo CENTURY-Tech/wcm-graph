@@ -11,7 +11,35 @@ describe("Graph", () => {
     assert.ok(graph.DependencyGraph);
   });
 
-  describe("DependencyGraph", () => {
+  describe("DependencyGraph static methods", () => {
+    /**
+     * Tests for the static method "stringifyDependencyName".
+     */
+    describe("Method: 'stringifyDependencyName'", () => {
+      it("should accept 1 parameter", () => {
+        assert.strictEqual(graph.DependencyGraph.stringifyDependencyName.length, 1);
+      });
+
+      it("should convert the dependency metadata into a string", () => {
+        assert.equal(graph.DependencyGraph.stringifyDependencyName({ name: "foo", version: "1.0.0" }), "foo@1.0.0");
+      });
+    });
+
+    /**
+     * Tests for the static method "parseDependencyName".
+     */
+    describe("Method: 'parseDependencyName'", () => {
+      it("should accept 1 parameter", () => {
+        assert.strictEqual(graph.DependencyGraph.parseDependencyName.length, 1);
+      });
+
+      it("should convert the dependency name into the original metadata", () => {
+        assert.deepEqual(graph.DependencyGraph.parseDependencyName("foo@1.0.0"), { name: "foo", version: "1.0.0" });
+      });
+    });
+  });
+
+  describe("DependencyGraph instance methods", () => {
     let dependencyGraph: graph.DependencyGraph;
 
     beforeEach(() => {
@@ -19,8 +47,8 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "addNode". This method should add a node with the dependency name provided and store the
-     * data provided against that node.
+     * Tests for the instance method "addNode". This method should add a node with the dependency name provided and
+     * store the data provided against that node.
      */
     describe("Method: 'addNode'", () => {
       it("should accept 2 parameters", () => {
@@ -46,8 +74,8 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "getNode". This method should retrieve the node with the dependency name provided and return
-     * the data stored against that node.
+     * Tests for the instance method "getNode". This method should retrieve the node with the dependency name provided
+     * and return the data stored against that node.
      */
     describe("Method: 'getNode'", () => {
       it("should accept 1 parameter", () => {
@@ -67,7 +95,7 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "hasNode".
+     * Tests for the instance method "hasNode".
      */
     describe("Method: 'hasNode'", () => {
       it("should accept 1 parameter", () => {
@@ -85,7 +113,7 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "markDependency".
+     * Tests for the instance method "markDependency".
      */
     describe("Method: 'markDependency'", () => {
       it("should accept 2 parameters", () => {
@@ -115,7 +143,7 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "hasDependency".
+     * Tests for the instance method "hasDependency".
      */
     describe("Method: 'hasDependency'", () => {
       it("should accept 2 parameters", () => {
@@ -133,7 +161,7 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "listDependencies".
+     * Tests for the instance method "listDependencies".
      */
     describe("Method: 'listDependencies'", () => {
       it("should accept 1 parameter", () => {
@@ -147,7 +175,7 @@ describe("Graph", () => {
     });
 
     /**
-     * Tests for the method "listDependants".
+     * Tests for the instance method "listDependants".
      */
     describe("Method: 'listDependants'", () => {
       it("should accept 1 parameter", () => {

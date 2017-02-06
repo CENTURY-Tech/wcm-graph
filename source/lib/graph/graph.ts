@@ -1,5 +1,7 @@
 import * as R from "ramda";
 
+export type DependencyName = { name: string, version: string };
+
 /**
  * A weakmap of the depedency graph nodes.
  */
@@ -118,6 +120,30 @@ export class DependencyGraph extends BaseGraph {
    */
   listDependants: (of: string) => string[] = (
     R.curryN(1, (of: string) => R.keys(R.filter(R.contains(of), getRelations(this) as any[]))) as (x: string) => string[]
+  );
+
+  /**
+   * A static method that will stringify key depedency metadata into a valid node name.
+   *
+   * @param {Object} opts      - The function options
+   * @param {String} opts.name - The depedency name
+   * @param {String} opts.name - the depedency version
+   *
+   * @returns {String} A stringified depedency name
+   */
+  static stringifyDependencyName: (opts: DependencyName) => string = (
+    R.compose(R.join("@"), R.values)
+  );
+
+  /**
+   * A static method that will stringify a depedency name into a valid node name.
+   *
+   * @param {String} name - The stringified depedency name
+   *
+   * @returns {Object} A parsed depedency name
+   */
+  static parseDependencyName: (name: string) => DependencyName = (
+    R.compose(R.fromPairs as (x: string[][]) => DependencyName, R.transpose, R.curry(R.pair)(["name", "version"]), R.split(/@/))
   );
 
 }
