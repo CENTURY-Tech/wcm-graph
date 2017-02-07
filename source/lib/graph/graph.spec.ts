@@ -113,6 +113,21 @@ describe("Graph", () => {
     });
 
     /**
+     * Tests for the instance method "listNodes".
+     */
+    describe("Method: 'listNodes'", () => {
+      it("should accept 0 parameters", () => {
+        assert.strictEqual(dependencyGraph.listNodes.length, 0);
+      });
+
+      it("should return a list of the previously added nodes", () => {
+        graph.__nodes.get(dependencyGraph).foo = "bar";
+        graph.__nodes.get(dependencyGraph).bar = "baz";
+        assert.deepEqual(dependencyGraph.listNodes(), ["foo", "bar"]);
+      });
+    });
+
+    /**
      * Tests for the instance method "markDependency".
      */
     describe("Method: 'markDependency'", () => {
