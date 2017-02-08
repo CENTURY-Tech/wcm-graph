@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import * as assert from "assert";
 import * as graph from "./graph";
 
@@ -11,30 +10,30 @@ describe("Graph", () => {
     assert.ok(graph.DependencyGraph);
   });
 
-  describe("DependencyGraph static methods", () => {
+  describe("BaseGraph static methods", () => {
     /**
-     * Tests for the static method "stringifyDependencyName".
+     * Tests for the static method "stringifyDependencyMetadata".
      */
-    describe("Method: 'stringifyDependencyName'", () => {
+    describe("Method: 'stringifyDependencyMetadata'", () => {
       it("should accept 1 parameter", () => {
-        assert.strictEqual(graph.DependencyGraph.stringifyDependencyName.length, 1);
+        assert.strictEqual(graph.BaseGraph.stringifyDependencyMetadata.length, 1);
       });
 
       it("should convert the dependency metadata into a string", () => {
-        assert.equal(graph.DependencyGraph.stringifyDependencyName({ name: "foo", version: "1.0.0" }), "foo@1.0.0");
+        assert.equal(graph.BaseGraph.stringifyDependencyMetadata({ name: "foo", version: "1.0.0" }), "foo@1.0.0");
       });
     });
 
     /**
-     * Tests for the static method "parseDependencyName".
+     * Tests for the static method "parseDependencyMetadata".
      */
-    describe("Method: 'parseDependencyName'", () => {
+    describe("Method: 'parseDependencyMetadata'", () => {
       it("should accept 1 parameter", () => {
-        assert.strictEqual(graph.DependencyGraph.parseDependencyName.length, 1);
+        assert.strictEqual(graph.BaseGraph.parseDependencyMetadata.length, 1);
       });
 
       it("should convert the dependency name into the original metadata", () => {
-        assert.deepEqual(graph.DependencyGraph.parseDependencyName("foo@1.0.0"), { name: "foo", version: "1.0.0" });
+        assert.deepEqual(graph.BaseGraph.parseDependencyMetadata("foo@1.0.0"), { name: "foo", version: "1.0.0" });
       });
     });
   });
@@ -62,7 +61,7 @@ describe("Graph", () => {
 
       it("should add a node with the supplied data", () => {
         dependencyGraph.addNode("foo", "bar");
-        assert.equal(graph.__nodes.get(dependencyGraph).foo, "bar");
+        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo, { data: "bar" });
       });
 
       it("should fail to add a node with the same name twice", () => {
@@ -83,7 +82,7 @@ describe("Graph", () => {
       });
 
       it("should return data stored against the node name supplied", () => {
-        graph.__nodes.get(dependencyGraph).foo = "bar";
+        graph.__nodes.get(dependencyGraph).foo = { data: "bar" };
         assert.equal(dependencyGraph.getNode("foo"), "bar");
       });
 
@@ -124,6 +123,42 @@ describe("Graph", () => {
         graph.__nodes.get(dependencyGraph).foo = "bar";
         graph.__nodes.get(dependencyGraph).bar = "baz";
         assert.deepEqual(dependencyGraph.listNodes(), ["foo", "bar"]);
+      });
+    });
+
+    /**
+     * Tests for the instance method "resolveNode".
+     */
+    describe("Method: 'resolveNode'", () => {
+      it("should accept 2 parameters", () => {
+        assert.strictEqual(dependencyGraph.resolveNode.length, 2);
+      });
+
+      it("should fail when the 'from' node has not been added", () => {
+        assert.throws(() => {
+          return dependencyGraph.resolveNode("foo", "bar");
+        }, "No node with the name 'foo' has been added");
+      });
+
+      it("should fail when the 'to' node has not been added", () => {
+        assert.throws(() => {
+          graph.__nodes.get(dependencyGraph).foo = "bar";
+          dependencyGraph.resolveNode("foo", "bar");
+        }, "No node with the name 'bar' has been added");
+      });
+
+      it("should inherit the data on the 'from' node from the 'to' node", () => {
+        graph.__nodes.get(dependencyGraph).foo = { data: "bar" };
+        graph.__nodes.get(dependencyGraph).bar = { data: "baz" };
+        dependencyGraph.resolveNode("foo", "bar");
+        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo.data, "baz" );
+      });
+
+      it("should mark the 'from' node as a child of the 'to' node", () => {
+        graph.__nodes.get(dependencyGraph).foo = { data: "bar" };
+        graph.__nodes.get(dependencyGraph).bar = { data: "baz" };
+        dependencyGraph.resolveNode("foo", "bar");
+        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo.childOf, "bar" );
       });
     });
 

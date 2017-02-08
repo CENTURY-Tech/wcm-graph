@@ -3,7 +3,18 @@ import * as R from "ramda";
 /**
  * An interface representing optional depedency metadata.
  */
-export type DependencyName = { name: string, version: string };
+export interface DependencyMetadata {
+  name: string;
+  version: string;
+};
+
+/**
+ * An interface representing the structure of a node.
+ */
+export interface GraphNode {
+  data: Object;
+  childOf?: string;
+}
 
 /**
  * A weakmap of the depedency graph nodes.
@@ -11,7 +22,7 @@ export type DependencyName = { name: string, version: string };
  * @private
  */
 export const __nodes = new WeakMap();
-const getNodes = (key: any): Object => __nodes.get(key);
+const getNodes = (key: any): { [x: string]: GraphNode } => __nodes.get(key);
 const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
 
 /**
@@ -20,7 +31,7 @@ const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
  * @private
  */
 export const __relations = new WeakMap();
-const getRelations = (key: any): Object => __relations.get(key);
+const getRelations = (key: any): { [x: string]: string[] } => __relations.get(key);
 const setRelations = (key: any, value: any): void => void __relations.set(key, value);
 
 /**
@@ -47,7 +58,7 @@ export class BaseGraph {
    *
    * @returns {String} A stringified depedency name
    */
-  static stringifyDependencyName: (opts: DependencyName) => string = (
+  static stringifyDependencyMetadata: (opts: DependencyMetadata) => string = (
     R.compose(R.join("@"), R.values)
   );
 
@@ -60,8 +71,8 @@ export class BaseGraph {
    *
    * @returns {Object} A parsed depedency name
    */
-  static parseDependencyName: (name: string) => DependencyName = (
-    R.compose(R.fromPairs as (x: string[][]) => DependencyName, R.transpose, R.curry(R.pair)(["name", "version"]), R.split(/@/))
+  static parseDependencyMetadata: (name: string) => DependencyMetadata = (
+    R.compose(R.fromPairs as (x: string[][]) => DependencyMetadata, R.transpose, R.curry(R.pair)(["name", "version"]), R.split(/@/))
   );
 
 }
@@ -86,7 +97,7 @@ export class DependencyGraph extends BaseGraph {
   addNode(name: string, data: any): void {
     R.when(nodeExists(this), nodeAlreadyExistsErr)(name);
 
-    getNodes(this)[name] = data;
+    getNodes(this)[name] = { data };
     getRelations(this)[name] = [];
   }
 
@@ -127,6 +138,26 @@ export class DependencyGraph extends BaseGraph {
   listNodes: () => string[] = (
     ((ref) => () => R.keys(ref))(getNodes(this))
   );
+
+  /**
+   * Mutate the node with depedency name provided in the first argument, to the node with the depedency name provided in
+   * the second argument.
+   *
+   * @param {String} from - The name of the child node
+   * @param {String} to   - The name of the parent node
+   *
+   * @returns {Void}
+   */
+  resolveNode(from: string, to: string): void {
+    R.map(R.unless(nodeExists(this), noNodeFoundErr))([from, to]);
+
+    void function (nodes: { [x: string]: GraphNode }) {
+      nodes[from] = {
+        data: nodes[to].data,
+        childOf: to
+      };
+    }(getNodes(this));
+  }
 
   /**
    * Create a relationship from the depedency name provided as the first argument, to the depedency name provided as the
@@ -180,7 +211,7 @@ export class DependencyGraph extends BaseGraph {
    * @returns {String[]} A list of nodes that rely upon the node with the provided depedency name
    */
   listDependants: (of: string) => string[] = (
-    R.curryN(1, (of: string) => R.keys(R.filter(R.contains(of), getRelations(this) as any[]))) as (x: string) => string[]
+    R.curryN(1, (of: string) => R.keys(R.pickBy(R.contains(of), getRelations(this)))) as (x: string) => string[]
   );
 
 }
@@ -189,11 +220,13 @@ export class DependencyGraph extends BaseGraph {
  * A curried method to retrieve the data stored against a node with a specific depedency name.
  *
  * @private
+ *
  * @param {Any} scope - The scope against which the nodes are mapped
+ *
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
 function getNode(scope: any): (name: string) => any {
-  return R.flip(R.prop)(getNodes(scope));
+  return R.curry((name: string) => R.view(R.lensProp("data"), R.prop(name, getNodes(scope))));
 }
 
 /**
@@ -219,7 +252,7 @@ function nodeExists(scope: any): (name: string) => boolean {
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
 function getRelation(scope: any): (name: string) => any {
-  return R.flip(R.prop)(getRelations(scope));
+  return R.curry((name: string) => R.view(R.lensProp(name), getRelations(scope)));
 }
 
 /**
