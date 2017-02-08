@@ -6,6 +6,10 @@ describe("Graph", () => {
     assert.ok(graph.BaseGraph);
   });
 
+  it("should export a class with the name 'InternalGraph'", () => {
+    assert.ok(graph.InternalGraph);
+  });
+
   it("should export a class with the name 'DependencyGraph'", () => {
     assert.ok(graph.DependencyGraph);
   });
@@ -38,36 +42,36 @@ describe("Graph", () => {
     });
   });
 
-  describe("DependencyGraph instance methods", () => {
-    let dependencyGraph: graph.DependencyGraph;
+  describe("InternalGraph instance methods", () => {
+    let internalGraph: graph.InternalGraph;
 
     beforeEach(() => {
-      dependencyGraph = new graph.DependencyGraph();
+      internalGraph = new graph.InternalGraph();
     });
 
     /**
      * Tests for the instance method "addNode". This method should add a node with the dependency name provided and
      * store the data provided against that node.
      */
-    describe("Method: 'addNode'", () => {
+    describe("Method: '__addNode'", () => {
       it("should accept 2 parameters", () => {
-        assert.strictEqual(dependencyGraph.addNode.length, 2);
+        assert.strictEqual(internalGraph.__addNode.length, 2);
       });
 
       it("should add a node with the supplied name", () => {
-        dependencyGraph.addNode("foo", null);
-        assert.ok(graph.__nodes.has(dependencyGraph));
+        internalGraph.__addNode("foo", null);
+        assert.ok(graph.__nodes.has(internalGraph));
       });
 
       it("should add a node with the supplied data", () => {
-        dependencyGraph.addNode("foo", "bar");
-        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo, { data: "bar" });
+        internalGraph.__addNode("foo", "bar");
+        assert.deepEqual(graph.__nodes.get(internalGraph).foo, "bar");
       });
 
       it("should fail to add a node with the same name twice", () => {
         assert.throws(() => {
-          dependencyGraph.addNode("foo", null);
-          dependencyGraph.addNode("foo", null);
+          internalGraph.__addNode("foo", null);
+          internalGraph.__addNode("foo", null);
         }, "A node with the name 'foo' already exists");
       });
     });
@@ -76,19 +80,20 @@ describe("Graph", () => {
      * Tests for the instance method "getNode". This method should retrieve the node with the dependency name provided
      * and return the data stored against that node.
      */
-    describe("Method: 'getNode'", () => {
+    describe("Method: '__getNode'", () => {
       it("should accept 1 parameter", () => {
-        assert.strictEqual(dependencyGraph.getNode.length, 1);
+        assert.strictEqual(internalGraph.__getNode.length, 1);
       });
 
       it("should return data stored against the node name supplied", () => {
-        graph.__nodes.get(dependencyGraph).foo = { data: "bar" };
-        assert.equal(dependencyGraph.getNode("foo"), "bar");
+        graph.__nodes.get(internalGraph).foo = "bar";
+        internalGraph.__getNode("foo");
+        assert.equal(internalGraph.__getNode("foo"), "bar");
       });
 
       it("should fail when a node has not been added", () => {
         assert.throws(() => {
-          dependencyGraph.getNode("foo");
+          internalGraph.__getNode("foo");
         }, "No node with the name 'foo' has been added");
       });
     });
@@ -96,145 +101,126 @@ describe("Graph", () => {
     /**
      * Tests for the instance method "hasNode".
      */
-    describe("Method: 'hasNode'", () => {
+    describe("Method: '__hasNode'", () => {
       it("should accept 1 parameter", () => {
-        assert.strictEqual(dependencyGraph.hasNode.length, 1);
+        assert.strictEqual(internalGraph.__hasNode.length, 1);
       });
 
       it("should return 'true' when a node is found with the name supplied", () => {
-        graph.__nodes.get(dependencyGraph).foo = "bar";
-        assert.equal(dependencyGraph.hasNode("foo"), true);
+        graph.__nodes.get(internalGraph).foo = "bar";
+        assert.equal(internalGraph.__hasNode("foo"), true);
       });
 
       it("should return 'false' when no node is found with the name supplied", () => {
-        assert.equal(dependencyGraph.hasNode("foo"), false);
+        assert.equal(internalGraph.__hasNode("foo"), false);
       });
     });
 
     /**
      * Tests for the instance method "listNodes".
      */
-    describe("Method: 'listNodes'", () => {
+    describe("Method: '__listNodes'", () => {
       it("should accept 0 parameters", () => {
-        assert.strictEqual(dependencyGraph.listNodes.length, 0);
+        assert.strictEqual(internalGraph.__listNodes.length, 0);
       });
 
       it("should return a list of the previously added nodes", () => {
-        graph.__nodes.get(dependencyGraph).foo = "bar";
-        graph.__nodes.get(dependencyGraph).bar = "baz";
-        assert.deepEqual(dependencyGraph.listNodes(), ["foo", "bar"]);
-      });
-    });
-
-    /**
-     * Tests for the instance method "resolveNode".
-     */
-    describe("Method: 'resolveNode'", () => {
-      it("should accept 2 parameters", () => {
-        assert.strictEqual(dependencyGraph.resolveNode.length, 2);
-      });
-
-      it("should fail when the 'from' node has not been added", () => {
-        assert.throws(() => {
-          return dependencyGraph.resolveNode("foo", "bar");
-        }, "No node with the name 'foo' has been added");
-      });
-
-      it("should fail when the 'to' node has not been added", () => {
-        assert.throws(() => {
-          graph.__nodes.get(dependencyGraph).foo = "bar";
-          dependencyGraph.resolveNode("foo", "bar");
-        }, "No node with the name 'bar' has been added");
-      });
-
-      it("should inherit the data on the 'from' node from the 'to' node", () => {
-        graph.__nodes.get(dependencyGraph).foo = { data: "bar" };
-        graph.__nodes.get(dependencyGraph).bar = { data: "baz" };
-        dependencyGraph.resolveNode("foo", "bar");
-        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo.data, "baz" );
-      });
-
-      it("should mark the 'from' node as a child of the 'to' node", () => {
-        graph.__nodes.get(dependencyGraph).foo = { data: "bar" };
-        graph.__nodes.get(dependencyGraph).bar = { data: "baz" };
-        dependencyGraph.resolveNode("foo", "bar");
-        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo.childOf, "bar" );
+        graph.__nodes.get(internalGraph).foo = "bar";
+        graph.__nodes.get(internalGraph).bar = "baz";
+        assert.deepEqual(internalGraph.__listNodes(), ["foo", "bar"]);
       });
     });
 
     /**
      * Tests for the instance method "markDependency".
      */
-    describe("Method: 'markDependency'", () => {
+    describe("Method: '__markDependency'", () => {
       it("should accept 2 parameters", () => {
-        assert.strictEqual(dependencyGraph.markDependency.length, 2);
+        assert.strictEqual(internalGraph.__markDependency.length, 2);
       });
 
       it("should fail when the 'from' node has not been added", () => {
         assert.throws(() => {
-          return dependencyGraph.markDependency("foo", "bar");
+          return internalGraph.__markDependency("foo", "bar");
         }, "No node with the name 'foo' has been added");
       });
 
       it("should fail when the 'to' node has not been added", () => {
         assert.throws(() => {
-          graph.__nodes.get(dependencyGraph).foo = "bar";
-          dependencyGraph.markDependency("foo", "bar");
+          graph.__nodes.get(internalGraph).foo = "bar";
+          internalGraph.__markDependency("foo", "bar");
         }, "No node with the name 'bar' has been added");
       });
 
       it("should add 'to' to the relations array of 'from'", () => {
-        graph.__nodes.get(dependencyGraph).foo = "bar";
-        graph.__nodes.get(dependencyGraph).bar = "baz";
-        graph.__relations.get(dependencyGraph).foo = [];
-        dependencyGraph.markDependency("foo", "bar");
-        assert.deepEqual(graph.__relations.get(dependencyGraph).foo, ["bar"]);
+        graph.__nodes.get(internalGraph).foo = "bar";
+        graph.__nodes.get(internalGraph).bar = "baz";
+        graph.__relations.get(internalGraph).foo = [];
+        internalGraph.__markDependency("foo", "bar");
+        assert.deepEqual(graph.__relations.get(internalGraph).foo, ["bar"]);
       });
     });
 
     /**
      * Tests for the instance method "hasDependency".
      */
-    describe("Method: 'hasDependency'", () => {
+    describe("Method: '__hasDependency'", () => {
       it("should accept 2 parameters", () => {
-        assert.strictEqual(dependencyGraph.hasDependency.length, 2);
+        assert.strictEqual(internalGraph.__hasDependency.length, 2);
       });
 
       it("should return 'true' when a relationship between the 'from' and 'to' nodes is found", () => {
-        graph.__relations.get(dependencyGraph).foo = ["bar"];
-        assert.equal(dependencyGraph.hasDependency("foo", "bar"), true);
+        graph.__relations.get(internalGraph).foo = ["bar"];
+        assert.equal(internalGraph.__hasDependency("foo", "bar"), true);
       });
 
       it("should return 'false' when no relationship between the 'from' and 'to' nodes is found", () => {
-        assert.equal(dependencyGraph.hasDependency("foo", "bar"), false);
+        assert.equal(internalGraph.__hasDependency("foo", "bar"), false);
       });
     });
 
     /**
      * Tests for the instance method "listDependencies".
      */
-    describe("Method: 'listDependencies'", () => {
+    describe("Method: '__listDependencies'", () => {
       it("should accept 1 parameter", () => {
-        assert.strictEqual(dependencyGraph.listDependencies.length, 1);
+        assert.strictEqual(internalGraph.__listDependencies.length, 1);
       });
 
       it("should return the dependencies of the 'of' node", () => {
-        graph.__relations.get(dependencyGraph).foo = ["bar"];
-        assert.deepEqual(dependencyGraph.listDependencies("foo"), ["bar"]);
+        graph.__relations.get(internalGraph).foo = ["bar"];
+        assert.deepEqual(internalGraph.__listDependencies("foo"), ["bar"]);
       });
     });
 
     /**
      * Tests for the instance method "listDependants".
      */
-    describe("Method: 'listDependants'", () => {
+    describe("Method: '__listDependants'", () => {
       it("should accept 1 parameter", () => {
-        assert.strictEqual(dependencyGraph.listDependants.length, 1);
+        assert.strictEqual(internalGraph.__listDependants.length, 1);
       });
 
       it("should return the dependants of the 'of' node", () => {
-        graph.__relations.get(dependencyGraph).foo = ["bar"];
-        assert.deepEqual(dependencyGraph.listDependants("bar"), ["foo"]);
+        graph.__relations.get(internalGraph).foo = ["bar"];
+        assert.deepEqual(internalGraph.__listDependants("bar"), ["foo"]);
+      });
+    });
+  });
+
+  describe("DependencyGraph instance methods", () => {
+    let dependencyGraph: graph.DependencyGraph;
+
+    beforeEach(() => {
+      dependencyGraph = new graph.DependencyGraph();
+    });
+
+    /**
+     * Tests for the instance method "addRealDependency".
+     */
+    describe("Method: 'addRealDependency'", () => {
+      it("should accept 2 parameters", () => {
+        assert.strictEqual(dependencyGraph.addRealDependency.length, 2);
       });
     });
   });

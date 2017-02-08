@@ -22,7 +22,7 @@ export interface GraphNode {
  * @private
  */
 export const __nodes = new WeakMap();
-const getNodes = (key: any): { [x: string]: GraphNode } => __nodes.get(key);
+const getNodes = (key: any): { [x: string]: GraphNode; } => __nodes.get(key);
 const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
 
 /**
@@ -31,7 +31,7 @@ const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
  * @private
  */
 export const __relations = new WeakMap();
-const getRelations = (key: any): { [x: string]: string[] } => __relations.get(key);
+const getRelations = (key: any): { [x: string]: string[]; } => __relations.get(key);
 const setRelations = (key: any, value: any): void => void __relations.set(key, value);
 
 /**
@@ -67,108 +67,82 @@ export class BaseGraph {
    *
    * @function
    *
-   * @param {String} name - The stringified depedency name
+   * @param {String} value - The stringified depedency metadata
    *
    * @returns {Object} A parsed depedency name
    */
-  static parseDependencyMetadata: (name: string) => DependencyMetadata = (
+  static parseDependencyMetadata: (value: string) => DependencyMetadata = (
     R.compose(R.fromPairs as (x: string[][]) => DependencyMetadata, R.transpose, R.curry(R.pair)(["name", "version"]), R.split(/@/))
   );
 
 }
 
-/**
- * A class built to manage the data relating to inter-dependencies in a project.
- *
- * @class
- * @extends BaseGraph
- */
-export class DependencyGraph extends BaseGraph {
+export class InternalGraph extends BaseGraph {
 
   /**
-   * Add a node with the dependency name provided to the dependency graph, with the data provided. If a node with the
-   * dependency name provided already exists on the dependency graph an error will be thrown.
+   * Add a node with the name provided to the graph, with the data provided. If a node with the name provided already
+   * exists on the dependency an error will be thrown.
    *
-   * @param {String} name - The name of the dependency
-   * @param {Any}    data - The data to map to the dependency
+   * @param {String} name - The name of the node
+   * @param {Any}    data - The data to map to the node
    *
    * @returns {Void}
    */
-  addNode(name: string, data: any): void {
+  __addNode(name: string, data: any): void {
     R.when(nodeExists(this), nodeAlreadyExistsErr)(name);
 
-    getNodes(this)[name] = { data };
+    getNodes(this)[name] = data;
     getRelations(this)[name] = [];
   }
 
   /**
-   * Retrieve the data relating to the node with the dependency name provided. If no node exists with the depedency name
-   * provided an error will be thrown.
+   * Retrieve the data relating to the node with the name provided. If no node exists with the name provided an error
+   * will be thrown.
    *
    * @function
    *
-   * @param {String} name - The name of the dependency
+   * @param {String} name - The name of the node
    *
-   * @returns {Any} Any data stored against the dependency graph at the node with the depedency name provided
+   * @returns {Any} Any data stored against the graph at the node with the name provided
    */
-  getNode: (name: string) => any = (
+  __getNode: (name: string) => any = (
     R.ifElse(nodeExists(this), getNode(this), noNodeFoundErr)
   );
 
   /**
-   * Check to see whether or not the dependency graph contains a node with the dependency name provided.
+   * Check to see whether or not the graph contains a node with the name provided.
    *
    * @function
    *
-   * @param {String} name - The name of the dependency
+   * @param {String} name - The name of the node
    *
-   * @returns {Boolean} Whether or not the graph has a dependency with the name provided
+   * @returns {Boolean} Whether or not the graph has a node with the name provided
    */
-  hasNode(name: string): boolean {
+  __hasNode(name: string): boolean {
     return nodeExists(this)(name);
   }
 
   /**
-   * Retrieve a list of the depedency names for each node that has been previously added to the depedency graph.
+   * Retrieve a list of the names for each node that has been previously added to the graph.
    *
    * @function
    *
-   * @returns {String[]} An array of depedency names that have been previously added to the depedency graph
+   * @returns {String[]} An array of node names that have been previously added to the graph
    */
-  listNodes: () => string[] = (
+  __listNodes: () => string[] = (
     ((ref) => () => R.keys(ref))(getNodes(this))
   );
 
   /**
-   * Mutate the node with depedency name provided in the first argument, to the node with the depedency name provided in
-   * the second argument.
-   *
-   * @param {String} from - The name of the child node
-   * @param {String} to   - The name of the parent node
-   *
-   * @returns {Void}
-   */
-  resolveNode(from: string, to: string): void {
-    R.map(R.unless(nodeExists(this), noNodeFoundErr))([from, to]);
-
-    void function (nodes: { [x: string]: GraphNode }) {
-      nodes[from] = {
-        data: nodes[to].data,
-        childOf: to
-      };
-    }(getNodes(this));
-  }
-
-  /**
-   * Create a relationship from the depedency name provided as the first argument, to the depedency name provided as the
-   * second argument. If either of the depedency names cannot be found in the nodes list an error will be thrown.
+   * Create a relationship from the node with the name provided as the first argument, to the node with the name
+   * provided as the second argument. If either of the names cannot be found in the nodes list an error will be thrown.
    *
    * @param {String} from - The name of the dependant
    * @param {String} to   - The name of the dependency
    *
    * @returns {Void}
    */
-  markDependency(from: string, to: string): void {
+  __markDependency(from: string, to: string): void {
     R.map(R.unless(nodeExists(this), noNodeFoundErr))([from, to]);
 
     getRelation(this)(from).push(to);
@@ -184,35 +158,53 @@ export class DependencyGraph extends BaseGraph {
    *
    * @returns {Boolean} Whether or not a relationship exists from the 'from' node to the 'to' node
    */
-  hasDependency: (from: string, to: string) => boolean = (
+  __hasDependency: (from: string, to: string) => boolean = (
     relationExists(this)
   );
 
   /**
-   * Retrieve the list of nodes that the node with the provided depedency name depends upon.
+   * Retrieve the list of nodes that the node with the provided name depends upon.
    *
    * @function
    *
-   * @param {String} of - The name of the depedency
+   * @param {String} of - The name of the node
    *
-   * @returns {String[]} A list of nodes that the node with the provided depedency name depends upon
+   * @returns {String[]} A list of nodes that the node with the provided name depends upon
    */
-  listDependencies: (of: string) => string[] = (
+  __listDependencies: (of: string) => string[] = (
     getRelation(this)
   );
 
   /**
-   * Retrieve the list of nodes that rely upon the node with the provided depedency name.
+   * Retrieve the list of nodes that rely upon the node with the provided name.
    *
    * @function
    *
-   * @param {String} of - The name of the depedency
+   * @param {String} of - The name of the node
    *
-   * @returns {String[]} A list of nodes that rely upon the node with the provided depedency name
+   * @returns {String[]} A list of nodes that rely upon the node with the provided name
    */
-  listDependants: (of: string) => string[] = (
-    R.curryN(1, (of: string) => R.keys(R.pickBy(R.contains(of), getRelations(this)))) as (x: string) => string[]
+  __listDependants: (of: string) => string[] = (
+    (x: string) => R.keys(R.pickBy(R.contains(x), getRelations(this)))
   );
+
+}
+
+/**
+ * A class built to manage the data relating to inter-dependencies in a project.
+ *
+ * @class
+ * @extends BaseGraph
+ */
+export class DependencyGraph extends InternalGraph {
+
+  addRealDependency({name, version}: DependencyMetadata, data: any): void {
+    super.__addNode(name, { data, version, aliases: [version] });
+  }
+
+  addImpliedDependency({name, version}: DependencyMetadata) {
+    super.__getNode(name).aliases.push(version);
+  }
 
 }
 
@@ -226,7 +218,9 @@ export class DependencyGraph extends BaseGraph {
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
 function getNode(scope: any): (name: string) => any {
-  return R.curry((name: string) => R.view(R.lensProp("data"), R.prop(name, getNodes(scope))));
+  return (x: string) => {
+    return R.view(R.lensProp(x), getNodes(scope));
+  };
 }
 
 /**
@@ -252,7 +246,9 @@ function nodeExists(scope: any): (name: string) => boolean {
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
 function getRelation(scope: any): (name: string) => any {
-  return R.curry((name: string) => R.view(R.lensProp(name), getRelations(scope)));
+  return (x: string) => {
+    return R.view(R.lensProp(x), getRelations(scope));
+  };
 }
 
 /**
