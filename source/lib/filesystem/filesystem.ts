@@ -24,7 +24,7 @@ export type PackageManager = "bower" | "npm";
  */
 export type DependencyJson = BowerJson | PackageJson;
 
-export function readDependencyJson(packageManager: PackageManager, projectPath: string) {
+export function readDependenciesJson(packageManager: PackageManager, projectPath: string) {
   switch (packageManager) {
     case "bower":
       return readDependencyBowerJson(projectPath);
@@ -46,7 +46,7 @@ export function readDependencyPackageJson(projectPath: string) {
 }
 
 export async function readBowerJson(projectPath: string): Promise<BowerJson> {
-  return fs.readJson(path.resolve(projectPath, "bower.json"));
+  return fs.readJson(path.resolve(projectPath, ".bower.json"));
 }
 
 export async function readPackageJson(projectPath: string): Promise<PackageJson> {

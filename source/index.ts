@@ -1,7 +1,10 @@
 import * as R from "ramda";
 import * as path from "path";
-import { DependencyGraph } from "./lib/graph/graph";
-import { PackageManager, DependencyJson, readBowerJson, readPackageJson, readDependencyJson, listInstalledDependencies } from "./lib/filesystem/filesystem";
+import { BaseGraph, DependencyGraph, DependencyMetadata } from "./lib/graph/graph";
+import { PackageManager, DependencyJson, readBowerJson, readPackageJson, readDependenciesJson, listInstalledDependencies } from "./lib/filesystem/filesystem";
+import { firstDefinedProperty } from "./lib/utilities/utilities";
+
+const nodeNameFrom = BaseGraph.stringifyDependencyMetadata;
 
 /**
  * An asynchronous function that will prepare and return a dependency graph representing the inter-dependencies within
@@ -15,29 +18,60 @@ import { PackageManager, DependencyJson, readBowerJson, readPackageJson, readDep
 export async function generateDeclaredDependenciesGraph(projectPath: string, packageManager: PackageManager): Promise<DependencyGraph> {
   "use strict";
 
-  let dependencyGraph = new DependencyGraph();
+  const dependencyGraph = new DependencyGraph();
+  const dependencyRootMap: { [x: string]: string; } = {};
 
+  /**
+   * A curried method used to read the dependency JSON for the dependency with the name provided.
+   */
+  const readDependencyJson = readDependenciesJson(packageManager, projectPath);
+
+  /**
+   * A curried method used to add an installed dependency to the dependency graph.
+   */
+  const addInstalledDependency = addInstalledDependencyToGraph(dependencyGraph);
+
+  /**
+   * A curried method used to add an implied dependency to the dependency graph.
+   */
+  const addImpliedDependency = addImpliedDependencyToGraph(dependencyGraph);
+
+  /**
+   * 1) Retrieve a list of the installed dependencies
+   * 2) Read each dependency JSON file and register accordingly
+   */
   for (let dependency of await listInstalledDependencies(projectPath, packageManager)) {
-    console.log(dependency);
+    dependencyRootMap[dependency] = addInstalledDependency(await readDependencyJson(dependency));
   }
 
-  /*let projectJson: DependencyJson;
+  /**
+   * 1) Retrieve a list of the currently registered ndoes
+   * 2) Loop through each nodes list of dependencies and register accordingly
+   */
+  for (let nodeName of dependencyGraph.__listNodes()) {
+    const nodeData: DependencyJson = dependencyGraph.__getNode(nodeName);
 
+    for (let [name, version] of R.toPairs<string, string>(nodeData.dependencies)) {
+      if (dependencyRootMap[name] !== version) {
+        addImpliedDependency(name, version);
+      }
 
-  switch (packageManager) {
-    case "bower":
-      projectJson = await readBowerJson(projectPath);
-      break;
-    case "npm":
-      projectJson = await readPackageJson(projectPath);
-      break;
+      dependencyGraph.__markDependency(nodeName, nodeNameFrom({ name, version }));
+    }
   }
 
-  for (let [dependencyName, dependencyVersion] of R.toPairs<string, string>(projectJson.dependencies)) {
-    // dependencyGraph.addNode(DependencyGraph.stringifyDependencyName(), {});
+  console.log(dependencyGraph.__listDependants(nodeNameFrom({ name: "polymer", version: dependencyRootMap["polymer"] })));
 
-    processProjectDependency(dependencyName, dependencyGraph, readDependencyJson(packageManager, projectPath));
-  }*/
+  /*R.compose(
+    R.uniq,
+    R.unnest,
+    R.map(
+      R.compose(
+        R.toPairs,
+        R.prop("dependencies"),
+        dependencyGraph.__getNode)
+    )
+  )(dependencyGraph.__listNodes());*/
 
   return Promise.resolve(dependencyGraph);
 }
@@ -57,28 +91,51 @@ export async function generateImportedDependenciesGraph(projectPath: string, ent
   return Promise.resolve(new DependencyGraph());
 }
 
-function* processProjectDependency(dependencyName: string, dependencyGraph: DependencyGraph, readDependencyJson: (dependencyName: string) => Promise<DependencyJson>): IterableIterator<Promise<string>> {
-  "use strict";
-
-  let dependencyPairs;
-
-  yield readDependencyJson(dependencyName)
-    .then((dependencyJson: DependencyJson) => {
-      dependencyPairs = R.toPairs(dependencyJson);
-      return dependencyName;
-    });
-
-  for (let [dependencyName, dependencyVersion] of dependencyPairs) {
-    if (!dependencyGraph.hasNode(dependencyName)) {
-      yield* processProjectDependency(dependencyName, dependencyGraph, readDependencyJson);
-    }
-  }
+/**
+ * A curried method to register an installed dependency with the dependency graph and use dependency package JSON as the
+ * node data.
+ *
+ * @private
+ *
+ * @param {DependencyGraph} dependencyGraph - The dependency to register dependencies with
+ *
+ * @returns {Function} A curried method the register a node with the provided dependency package JSON
+ */
+function addInstalledDependencyToGraph(dependencyGraph: DependencyGraph) {
+  return (dependencyJson: DependencyJson): string => {
+    const dependencyMetadata: DependencyMetadata = getDependencyMetadata(dependencyJson);
+    dependencyGraph.__addNode(nodeNameFrom(dependencyMetadata), dependencyJson);
+    return dependencyMetadata.version;
+  };
 }
 
-function addDependencyToGraph(dependencyGraph: DependencyGraph) {
-  return (name: string, version: string) => {
-    dependencyGraph.addNode(DependencyGraph.stringifyDependencyName({ name, version }), null);
+/**
+ * A curried method to register an installed dependency with the dependency graph and use dependency package JSON as the
+ * node data.
+ *
+ * @private
+ *
+ * @param {DependencyGraph} dependencyGraph - The dependency to register dependencies with
+ *
+ * @returns {Function} A curried method the register a node with the provided dependency package JSON
+ */
+function addImpliedDependencyToGraph(dependencyGraph: DependencyGraph) {
+  return (name: string, version: string): void => {
+    dependencyGraph.__addNode(nodeNameFrom({ name, version }), null);
   };
+}
+
+/**
+ * Retrieve the dependency metadata from the dependency JSON.
+ *
+ * @private
+ *
+ * @param {DependencyJson} dependencyJson - The dependency JSON
+ *
+ * @return {DependencyMetadata} A object containing the dependencys name and version
+ */
+function getDependencyMetadata(dependencyJson: DependencyJson): DependencyMetadata {
+  return { name: dependencyJson.name, version: firstDefinedProperty(["version", "_release"])(dependencyJson) };
 }
 
 generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-learn", "bower");
