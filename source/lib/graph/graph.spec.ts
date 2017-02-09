@@ -222,6 +222,61 @@ describe("Graph", () => {
       it("should accept 2 parameters", () => {
         assert.strictEqual(dependencyGraph.addRealDependency.length, 2);
       });
+
+      it("should add a node with the name provided", () => {
+        dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
+        assert.ok(graph.__nodes.get(dependencyGraph).foo);
+      });
+
+      it("should add a node with the version provided", () => {
+        dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
+        assert.equal(graph.__nodes.get(dependencyGraph).foo.version, "1");
+      });
+
+      it("should add a node with the data provided", () => {
+        dependencyGraph.addRealDependency({ name: "foo", version: "1" }, "bar");
+        assert.equal(graph.__nodes.get(dependencyGraph).foo.data, "bar");
+      });
+
+      it("should add a node and add the version to the aliases", () => {
+        dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
+        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo.aliases, ["1"]);
+      });
+
+      it("should fail to add a node with the same name twice", () => {
+        assert.throws(() => {
+          graph.__nodes.get(dependencyGraph).foo = {};
+          dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
+        }, "A node with the name 'foo' already exists");
+      });
+    });
+
+    /**
+     * Tests for the instance method "addImpliedDependency".
+     */
+    describe("Method: 'addImpliedDependency'", () => {
+      it("should accept 1 parameter", () => {
+        assert.strictEqual(dependencyGraph.addImpliedDependency.length, 1);
+      });
+
+      it("should add an alias to the node with the name provided", () => {
+        graph.__nodes.get(dependencyGraph).foo = { aliases: [] };
+        dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
+        assert.deepEqual(graph.__nodes.get(dependencyGraph).foo.aliases, ["1"]);
+      });
+
+      it("should fail to add a node with the same version twice", () => {
+        assert.throws(() => {
+          graph.__nodes.get(dependencyGraph).foo = { aliases: ["1"] };
+          dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
+        }, "Version '1' has already been registed on node 'foo'");
+      });
+
+      it("should fail when a node has not been added", () => {
+        assert.throws(() => {
+          dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
+        }, "No node with the name 'foo' has been added");
+      });
     });
   });
 });

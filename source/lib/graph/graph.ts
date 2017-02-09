@@ -1,4 +1,5 @@
 import * as R from "ramda";
+import { pushToArray } from "../utilities/utilities";
 
 /**
  * An interface representing optional depedency metadata.
@@ -12,8 +13,9 @@ export interface DependencyMetadata {
  * An interface representing the structure of a node.
  */
 export interface GraphNode {
-  data: Object;
-  childOf?: string;
+  data?: Object;
+  version?: string;
+  aliases?: string[];
 }
 
 /**
@@ -77,6 +79,12 @@ export class BaseGraph {
 
 }
 
+/**
+ * An internal set of semi-private or hidden methods to simplify the construction of the depedency graph.
+ *
+ * @class
+ * @extends BaseGraph
+ */
 export class InternalGraph extends BaseGraph {
 
   /**
@@ -105,7 +113,7 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Any} Any data stored against the graph at the node with the name provided
    */
-  __getNode: (name: string) => any = (
+  __getNode: (name: string) => GraphNode = (
     R.ifElse(nodeExists(this), getNode(this), noNodeFoundErr)
   );
 
@@ -194,16 +202,37 @@ export class InternalGraph extends BaseGraph {
  * A class built to manage the data relating to inter-dependencies in a project.
  *
  * @class
- * @extends BaseGraph
+ * @extends InternalGraph
  */
 export class DependencyGraph extends InternalGraph {
 
+  /**
+   * Add a real dependency to the depedency graph with the dependency name provided and mark the version provided as the
+   * root version. Any extra data provided will be stored against the depedency node.
+   *
+   * @param {Object} opts         - The metadata relating to the depedency node
+   * @param {String} opts.name    - The name of the depedency node
+   * @param {String} opts.version - The version of the found depedency
+   * @param {Any}    data         - The data to store against the depedency node
+   *
+   * @returns {Void}
+   */
   addRealDependency({name, version}: DependencyMetadata, data: any): void {
     super.__addNode(name, { data, version, aliases: [version] });
   }
 
-  addImpliedDependency({name, version}: DependencyMetadata) {
-    super.__getNode(name).aliases.push(version);
+  /**
+   * Add an implied depedency to the depedency graph. Note that a real depedency with the same dependency name must have
+   * been added prior to adding an implied depedency.
+   *
+   * @param {Object} opts         - The metadata relating to the depedency node
+   * @param {String} opts.name    - The name of the depedency node
+   * @param {String} opts.version - The version of the found depedency
+   *
+   * @returns {Void}
+   */
+  addImpliedDependency({name, version}: DependencyMetadata): void {
+    R.ifElse(versionExists(this, name), versionAlreadyExistsErr(name), pushToArray(this.__getNode(name).aliases))(version);
   }
 
 }
@@ -217,10 +246,8 @@ export class DependencyGraph extends InternalGraph {
  *
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
-function getNode(scope: any): (name: string) => any {
-  return (x: string) => {
-    return R.view(R.lensProp(x), getNodes(scope));
-  };
+function getNode(scope: any): (name: string) => GraphNode {
+  return R.flip(R.prop)(getNodes(scope));
 }
 
 /**
@@ -245,10 +272,8 @@ function nodeExists(scope: any): (name: string) => boolean {
  *
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
-function getRelation(scope: any): (name: string) => any {
-  return (x: string) => {
-    return R.view(R.lensProp(x), getRelations(scope));
-  };
+function getRelation(scope: any): (name: string) => string[] {
+  return R.flip(R.prop)(getRelations(scope));
 }
 
 /**
@@ -267,12 +292,12 @@ function relationExists(scope: any): (from: string, to: string) => boolean {
 }
 
 /**
- * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
- * depedency graph.
+ * An error that will alert upstream consumers that a node with the depedency name provided has already been added to
+ * the graph.
  *
  * @private
  *
- * @param {String} name - The name of the dependency
+ * @param {String} name - The name of the node
  *
  * @returns {Never}
  */
@@ -282,14 +307,43 @@ function nodeAlreadyExistsErr(name: string): never {
 
 /**
  * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
- * depedency graph.
+ * graph.
  *
  * @private
  *
- * @param {String} name - The name of the dependency
+ * @param {String} name - The name of the node
  *
  * @returns {Never}
  */
 function noNodeFoundErr(name: string): never {
   throw Error(`No node with the name '${name}' has been added`);
+}
+
+/**
+ * A curried method to check the existances of a node with a specific depedency name.
+ *
+ * @private
+ *
+ * @param {Any} scope - The scope against which the nodes are mapped
+ *
+ * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
+ */
+function versionExists(scope: any, name: string): (version: string) => boolean {
+  return R.curry((aliases: string[], version: string): boolean => R.contains(version, aliases))(getNode(scope)(name).aliases);
+}
+
+/**
+ * A curried method that will eventually throw an error that will alert upstream consumers that the version provided
+ * already exists on the node with the provided name.
+ *
+ * @private
+ *
+ * @param {String} name - The name of the node
+ *
+ * @returns {Function} A method that when supplied with a version string will throw an error
+ */
+function versionAlreadyExistsErr(name: string): (version: string) => never {
+  return (version: string): never => {
+    throw Error(`Version '${version}' has already been registed on node '${name}'`);
+  };
 }
