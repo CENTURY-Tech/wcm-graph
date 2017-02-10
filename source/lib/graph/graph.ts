@@ -193,7 +193,7 @@ export class InternalGraph extends BaseGraph {
    * @returns {String[]} A list of nodes that rely upon the node with the provided name
    */
   __listDependants: (of: string) => { [x: string]: string; } = (
-    (x: string): { [x: string]: string; } => R.pickBy((y) => R.contains(x, R.keys(y)), getRelations(this))
+    (x: string) => R.pickBy<any, { [x: string]: string; }>((y) => R.contains(x, R.keys(y)), getRelations(this))
   );
 
 }
@@ -259,9 +259,9 @@ export class DependencyGraph extends InternalGraph {
     this.__listDependencies
   );
 
-  // listDependantsOfDependency: (name: string) => { [x: string]: string; } = (
-    // R.compose(R.map(R.curry(R.pick)(["name", "version"])), R.map(this.getDependencyData), this.__listDependants)
-  // );
+  listDependantsOfDependency: (name: string) => { [x: string]: string; } = (
+    R.compose<any, any, any, any>(R.map(R.curry(R.pick)(["name", "version"])), R.map(this.getDependencyData), this.__listDependants)
+  );
 
 }
 

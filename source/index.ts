@@ -128,5 +128,5 @@ function getDependencyPairs(dependencyJson: DependencyJson): string[][] {
 }
 
 generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-learn", "bower")
-  .then(graph => console.log(JSON.stringify(graph.__listDependants("polymer"), null, 4)))
+  .then(graph => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4)))
   .catch(err => console.log(err));
