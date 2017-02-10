@@ -141,14 +141,14 @@ describe("Graph", () => {
 
       it("should fail when the 'from' node has not been added", () => {
         assert.throws(() => {
-          return internalGraph.__markDependency("foo", "bar");
+          return internalGraph.__markDependency("foo", "bar", null);
         }, "No node with the name 'foo' has been added");
       });
 
       it("should fail when the 'to' node has not been added", () => {
         assert.throws(() => {
           graph.__nodes.get(internalGraph).foo = "bar";
-          internalGraph.__markDependency("foo", "bar");
+          internalGraph.__markDependency("foo", "bar", null);
         }, "No node with the name 'bar' has been added");
       });
 
@@ -156,7 +156,7 @@ describe("Graph", () => {
         graph.__nodes.get(internalGraph).foo = "bar";
         graph.__nodes.get(internalGraph).bar = "baz";
         graph.__relations.get(internalGraph).foo = [];
-        internalGraph.__markDependency("foo", "bar");
+        internalGraph.__markDependency("foo", "bar", null);
         assert.deepEqual(graph.__relations.get(internalGraph).foo, ["bar"]);
       });
     });

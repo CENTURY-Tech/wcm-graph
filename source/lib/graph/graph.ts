@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import { pushToArray } from "../utilities/utilities";
+import { pushToArray, makeCaseInsensitive } from "../utilities/utilities";
 
 /**
  * An interface representing optional depedency metadata.
@@ -24,7 +24,7 @@ export interface GraphNode {
  * @private
  */
 export const __nodes = new WeakMap();
-const getNodes = (key: any): { [x: string]: GraphNode; } => __nodes.get(key);
+const getNodes = (key: any): { [x: string]: GraphNode; } => makeCaseInsensitive(__nodes.get(key));
 const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
 
 /**
@@ -33,7 +33,7 @@ const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
  * @private
  */
 export const __relations = new WeakMap();
-const getRelations = (key: any): { [x: string]: string[]; } => __relations.get(key);
+const getRelations = (key: any): { [x: string]: { [x: string]: string; } } => makeCaseInsensitive(__relations.get(key));
 const setRelations = (key: any, value: any): void => void __relations.set(key, value);
 
 /**
@@ -100,7 +100,7 @@ export class InternalGraph extends BaseGraph {
     R.when(nodeExists(this), nodeAlreadyExistsErr)(name);
 
     getNodes(this)[name] = data;
-    getRelations(this)[name] = [];
+    getRelations(this)[name] = {};
   }
 
   /**
@@ -150,10 +150,10 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Void}
    */
-  __markDependency(from: string, to: string): void {
+  __markDependency(from: string, to: string, data: any): void {
     R.map(R.unless(nodeExists(this), noNodeFoundErr))([from, to]);
 
-    getRelation(this)(from).push(to);
+    getRelation(this)(from)[to] = data;
   }
 
   /**
@@ -179,7 +179,7 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {String[]} A list of nodes that the node with the provided name depends upon
    */
-  __listDependencies: (of: string) => string[] = (
+  __listDependencies: (of: string) => { [x: string]: string; } = (
     getRelation(this)
   );
 
@@ -192,8 +192,8 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {String[]} A list of nodes that rely upon the node with the provided name
    */
-  __listDependants: (of: string) => string[] = (
-    (x: string) => R.keys(R.pickBy(R.contains(x), getRelations(this)))
+  __listDependants: (of: string) => { [x: string]: string; } = (
+    (x: string): { [x: string]: string; } => R.pickBy((y) => R.contains(x, R.keys(y)), getRelations(this))
   );
 
 }
@@ -235,6 +235,34 @@ export class DependencyGraph extends InternalGraph {
     R.ifElse(versionExists(this, name), versionAlreadyExistsErr(name), pushToArray(this.__getNode(name).aliases))(version);
   }
 
+  listAllRealDependencies: () => string[] = (
+    this.__listNodes
+  );
+
+  getDependencyData: (name: string) => any = (
+    (x: string) => R.prop("data", this.__getNode(x))
+  );
+
+  getDependencyVersion: (name: string) => any = (
+    (x: string) => R.prop("version", this.__getNode(x))
+  );
+
+  getDependencyAliases: (name: string) => string[] = (
+    ((ref) => (x: string) => R.path<string[]>([x, "aliases"], ref))(getNodes(this))
+  );
+
+  createInterDependency(from: string, to: DependencyMetadata): void {
+    this.__markDependency(from, to.name, to.version);
+  }
+
+  listDependenciesOfDependency: (name: string) => { [x: string]: string; } = (
+    this.__listDependencies
+  );
+
+  // listDependantsOfDependency: (name: string) => { [x: string]: string; } = (
+    // R.compose(R.map(R.curry(R.pick)(["name", "version"])), R.map(this.getDependencyData), this.__listDependants)
+  // );
+
 }
 
 /**
@@ -272,7 +300,7 @@ function nodeExists(scope: any): (name: string) => boolean {
  *
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
-function getRelation(scope: any): (name: string) => string[] {
+function getRelation(scope: any): (name: string) => { [x: string]: string; } {
   return R.flip(R.prop)(getRelations(scope));
 }
 
@@ -287,7 +315,7 @@ function getRelation(scope: any): (name: string) => string[] {
  */
 function relationExists(scope: any): (from: string, to: string) => boolean {
   return (a: string, b: string) => {
-    return R.contains(b, getRelation(scope)(a) || []);
+    return R.contains(b, R.keys(getRelation(scope)(a)) || []);
   };
 }
 
