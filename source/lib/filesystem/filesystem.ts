@@ -24,7 +24,7 @@ export type PackageManager = "bower" | "npm";
  */
 export type DependencyJson = BowerJson | PackageJson;
 
-export function readDependenciesJson(packageManager: PackageManager, projectPath: string) {
+export function readDependenciesJson(projectPath: string, packageManager: PackageManager): (dependencyName: string) => Promise<DependencyJson> {
   switch (packageManager) {
     case "bower":
       return readDependencyBowerJson(projectPath);
@@ -33,13 +33,13 @@ export function readDependenciesJson(packageManager: PackageManager, projectPath
   }
 }
 
-export function readDependencyBowerJson(projectPath: string) {
+export function readDependencyBowerJson(projectPath: string): (dependencyName: string) => Promise<BowerJson> {
   return (dependencyName: string) => {
     return readBowerJson(path.resolve(projectPath, "bower_components", dependencyName));
   };
 }
 
-export function readDependencyPackageJson(projectPath: string) {
+export function readDependencyPackageJson(projectPath: string): (dependencyName: string) => Promise<PackageJson> {
   return (dependencyName: string) => {
     return readPackageJson(path.resolve(projectPath, "node_modules", dependencyName));
   };
@@ -92,7 +92,7 @@ export async function listDirectoryChildren(directoryPath: string): Promise<stri
  * @returns {String[]} A list of directory names retrieved from the list of fully qualified paths provided
  */
 function extractFolderNamesSync(paths: string[]): string[] {
-  return R.pipe(extractFoldersSync, extractPathEndingsSync)(paths);
+  return R.pipe(extractFoldersSync, extractPathEndingsSync, filterDotFiles)(paths);
 }
 
 /**
@@ -119,4 +119,17 @@ function extractFoldersSync(paths: string[]): string[] {
  */
 function extractPathEndingsSync(paths: string[]): string[] {
   return paths.map(R.pipe(R.split(path.sep), R.last as (x: string[]) => string));
+}
+
+/**
+ * Synchronously remove filesname that are hidden.
+ *
+ * @private
+ *
+ * @param {String[]} filenames - The list of filenames
+ *
+ * @returns {String[]} A list of filenames that are not hidden
+ */
+function filterDotFiles(filesname: string[]): string[] {
+  return R.filter(R.test(/^\w/), filesname);
 }
