@@ -81,7 +81,7 @@ function caseInsensitivePropSet(target: { [x: string]: any }, prop: string, valu
  * @param {Object} target - The target object
  * @param {String} prop   - The target property
  *
- * @returns {Boolean} A success value after setting the property
+ * @returns {Object} A property descriptor
  */
 function caseInsensitivePropDescriptor<T>(target: T, prop: string): Object | undefined {
   const value = target.hasOwnProperty(prop.toLowerCase());
