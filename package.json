@@ -1,13 +1,13 @@
 {
   "name": "wcm-graph",
   "version": "0.0.0",
-  "description": "",
+  "description": "Dependency graph generator for WCM",
   "main": "index.js",
   "scripts": {
     "prebuild": "npm run lint",
     "build": "rm -rf dist && tsc",
     "predocs": "npm run build",
-    "docs": " jsdoc dist -r -d docs",
+    "docs": " jsdoc README.md dist -r -d docs",
     "lint": "tslint --project . --fix",
     "pretest": "npm run build",
     "test": "mocha dist/**/*.spec.js"
