@@ -91,7 +91,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line60">line 60</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line166">line 166</a>
     </li></ul></dd>
     
 
@@ -127,7 +127,7 @@
 
 
     <ul>
-        <li><a href="BaseGraph.html">BaseGraph</a></li>
+        <li><a href="InternalGraph.html">InternalGraph</a></li>
     </ul>
 
 
@@ -151,15 +151,15 @@
 
     
 
-    <h4 class="name" id="addNode"><span class="type-signature"></span>addNode<span class="signature">(name, data)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+    <h4 class="name" id="__addNode"><span class="type-signature"></span>__addNode<span class="signature">(name, data)</span><span class="type-signature"> &rarr; {Void}</span></h4>
 
     
 
 
 
 <div class="description">
-    Add a node with the dependency name provided to the dependency graph, with the data provided. If a node with the
-dependency name provided already exists on the dependency graph an error will be thrown.
+    Add a node with the name provided to the graph, with the data provided. If a node with the name provided already
+exists on the dependency an error will be thrown.
 </div>
 
 
@@ -211,7 +211,7 @@ dependency name provided already exists on the dependency graph an error will be
 
             
 
-            <td class="description last">The name of the dependency</td>
+            <td class="description last">The name of the node</td>
         </tr>
 
     
@@ -234,7 +234,7 @@ dependency name provided already exists on the dependency graph an error will be
 
             
 
-            <td class="description last">The data to map to the dependency</td>
+            <td class="description last">The data to map to the node</td>
         </tr>
 
     
@@ -252,6 +252,11 @@ dependency name provided already exists on the dependency graph an error will be
 
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__addNode">InternalGraph#__addNode</a>
+    </li></ul></dd>
     
 
     
@@ -275,7 +280,7 @@ dependency name provided already exists on the dependency graph an error will be
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line123">line 123</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line127">line 127</a>
     </li></ul></dd>
     
 
@@ -324,15 +329,15 @@ dependency name provided already exists on the dependency graph an error will be
 
     
 
-    <h4 class="name" id="getNode"><span class="type-signature"></span>getNode<span class="signature">(name)</span><span class="type-signature"> &rarr; {Any}</span></h4>
+    <h4 class="name" id="__getNode"><span class="type-signature"></span>__getNode<span class="signature">(name)</span><span class="type-signature"> &rarr; {Any}</span></h4>
 
     
 
 
 
 <div class="description">
-    Retrieve the data relating to the node with the dependency name provided. If no node exists with the depedency name
-provided an error will be thrown.
+    Retrieve the data relating to the node with the name provided. If no node exists with the name provided an error
+will be thrown.
 </div>
 
 
@@ -384,7 +389,7 @@ provided an error will be thrown.
 
             
 
-            <td class="description last">The name of the dependency</td>
+            <td class="description last">The name of the node</td>
         </tr>
 
     
@@ -402,6 +407,11 @@ provided an error will be thrown.
 
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__getNode">InternalGraph#__getNode</a>
+    </li></ul></dd>
     
 
     
@@ -425,7 +435,7 @@ provided an error will be thrown.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line73">line 73</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -452,7 +462,7 @@ provided an error will be thrown.
 
         
 <div class="param-desc">
-    Any data stored against the dependency graph at the node with the depedency name provided
+    Any data stored against the graph at the node with the name provided
 </div>
 
 
@@ -478,7 +488,7 @@ provided an error will be thrown.
 
     
 
-    <h4 class="name" id="hasDependency"><span class="type-signature"></span>hasDependency<span class="signature">(from, to)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="__hasDependency"><span class="type-signature"></span>__hasDependency<span class="signature">(from, to)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
 
     
 
@@ -579,6 +589,11 @@ provided an error will be thrown.
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__hasDependency">InternalGraph#__hasDependency</a>
+    </li></ul></dd>
+    
 
     
 
@@ -601,7 +616,7 @@ provided an error will be thrown.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line92">line 92</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -654,14 +669,14 @@ provided an error will be thrown.
 
     
 
-    <h4 class="name" id="hasNode"><span class="type-signature"></span>hasNode<span class="signature">(name)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="__hasNode"><span class="type-signature"></span>__hasNode<span class="signature">(name)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    Check to see whether or not the dependency graph contains a node with the dependency name provided.
+    Check to see whether or not the graph contains a node with the name provided.
 </div>
 
 
@@ -713,7 +728,7 @@ provided an error will be thrown.
 
             
 
-            <td class="description last">The name of the dependency</td>
+            <td class="description last">The name of the node</td>
         </tr>
 
     
@@ -731,6 +746,11 @@ provided an error will be thrown.
 
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__hasNode">InternalGraph#__hasNode</a>
+    </li></ul></dd>
     
 
     
@@ -754,7 +774,7 @@ provided an error will be thrown.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line137">line 137</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line141">line 141</a>
     </li></ul></dd>
     
 
@@ -781,7 +801,7 @@ provided an error will be thrown.
 
         
 <div class="param-desc">
-    Whether or not the graph has a dependency with the name provided
+    Whether or not the graph has a node with the name provided
 </div>
 
 
@@ -807,14 +827,14 @@ provided an error will be thrown.
 
     
 
-    <h4 class="name" id="listDependants"><span class="type-signature"></span>listDependants<span class="signature">(of)</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+    <h4 class="name" id="__listDependants"><span class="type-signature"></span>__listDependants<span class="signature">(of)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    Retrieve the list of nodes that rely upon the node with the provided depedency name.
+    Retrieve the list of nodes that rely upon the node with the provided name.
 </div>
 
 
@@ -866,7 +886,7 @@ provided an error will be thrown.
 
             
 
-            <td class="description last">The name of the depedency</td>
+            <td class="description last">The name of the node</td>
         </tr>
 
     
@@ -884,6 +904,11 @@ provided an error will be thrown.
 
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__listDependants">InternalGraph#__listDependants</a>
+    </li></ul></dd>
     
 
     
@@ -907,7 +932,7 @@ provided an error will be thrown.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line112">line 112</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -934,7 +959,7 @@ provided an error will be thrown.
 
         
 <div class="param-desc">
-    A list of nodes that rely upon the node with the provided depedency name
+    A map of node names and their relationship data that rely on the node with the provided name
 </div>
 
 
@@ -945,7 +970,7 @@ provided an error will be thrown.
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;String></span>
+<span class="param-type">Object</span>
 
 
     </dd>
@@ -960,14 +985,14 @@ provided an error will be thrown.
 
     
 
-    <h4 class="name" id="listDependencies"><span class="type-signature"></span>listDependencies<span class="signature">(of)</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+    <h4 class="name" id="__listDependencies"><span class="type-signature"></span>__listDependencies<span class="signature">(of)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    Retrieve the list of nodes that the node with the provided depedency name depends upon.
+    Retrieve the list of nodes that the node with the provided name depends upon.
 </div>
 
 
@@ -1019,7 +1044,7 @@ provided an error will be thrown.
 
             
 
-            <td class="description last">The name of the depedency</td>
+            <td class="description last">The name of the node</td>
         </tr>
 
     
@@ -1038,6 +1063,11 @@ provided an error will be thrown.
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__listDependencies">InternalGraph#__listDependencies</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1060,7 +1090,7 @@ provided an error will be thrown.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line102">line 102</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -1087,7 +1117,7 @@ provided an error will be thrown.
 
         
 <div class="param-desc">
-    A list of nodes that the node with the provided depedency name depends upon
+    A map of node names and their relationship data that the node with the provided name relies on
 </div>
 
 
@@ -1098,7 +1128,7 @@ provided an error will be thrown.
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;String></span>
+<span class="param-type">Object</span>
 
 
     </dd>
@@ -1113,14 +1143,14 @@ provided an error will be thrown.
 
     
 
-    <h4 class="name" id="listNodes"><span class="type-signature"></span>listNodes<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+    <h4 class="name" id="__listNodes"><span class="type-signature"></span>__listNodes<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
 
     
 
 
 
 <div class="description">
-    Retrieve a list of the depedency names for each node that has been previously added to the depedency graph.
+    Retrieve a list of the names for each node that has been previously added to the graph.
 </div>
 
 
@@ -1142,6 +1172,11 @@ provided an error will be thrown.
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__listNodes">InternalGraph#__listNodes</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1164,7 +1199,7 @@ provided an error will be thrown.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line81">line 81</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line85">line 85</a>
     </li></ul></dd>
     
 
@@ -1191,7 +1226,7 @@ provided an error will be thrown.
 
         
 <div class="param-desc">
-    An array of depedency names that have been previously added to the depedency graph
+    An array of node names that have been previously added to the graph
 </div>
 
 
@@ -1217,15 +1252,15 @@ provided an error will be thrown.
 
     
 
-    <h4 class="name" id="markDependency"><span class="type-signature"></span>markDependency<span class="signature">(from, to)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+    <h4 class="name" id="__markDependency"><span class="type-signature"></span>__markDependency<span class="signature">(from, to, data)</span><span class="type-signature"> &rarr; {Void}</span></h4>
 
     
 
 
 
 <div class="description">
-    Create a relationship from the depedency name provided as the first argument, to the depedency name provided as the
-second argument. If either of the depedency names cannot be found in the nodes list an error will be thrown.
+    Create a relationship from the node with the name provided as the first argument, to the node with the name
+provided as the second argument. If either of the names cannot be found in the nodes list an error will be thrown.
 </div>
 
 
@@ -1304,6 +1339,29 @@ second argument. If either of the depedency names cannot be found in the nodes l
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The data to map to the relationship</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -1318,6 +1376,11 @@ second argument. If either of the depedency names cannot be found in the nodes l
 
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="InternalGraph.html#__markDependency">InternalGraph#__markDependency</a>
+    </li></ul></dd>
     
 
     
@@ -1341,7 +1404,7 @@ second argument. If either of the depedency names cannot be found in the nodes l
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line149">line 149</a>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line154">line 154</a>
     </li></ul></dd>
     
 
@@ -1386,6 +1449,1740 @@ second argument. If either of the depedency names cannot be found in the nodes l
 
 
         
+            
+
+    
+
+    <h4 class="name" id="addImpliedDependency"><span class="type-signature"></span>addImpliedDependency<span class="signature">(opts)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Add an implied depedency to the depedency graph. Note that a real depedency with the same dependency name must have
+been added prior to adding an implied depedency.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The metadata relating to the depedency node
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The version of the found depedency</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line262">line 262</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addRealDependency"><span class="type-signature"></span>addRealDependency<span class="signature">(opts, data)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Add a real dependency to the depedency graph with the dependency name provided and mark the version provided as the
+root version. Any extra data provided will be stored against the depedency node.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The metadata relating to the depedency node
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The version of the found depedency</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The data to store against the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line249">line 249</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createInterDependency"><span class="type-signature"></span>createInterDependency<span class="signature">(from, to)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a relationship from a real dependency node to a specific depedency alias. This alias may or may not point to
+a real depedency.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>from</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the dependant node`</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>to</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The metadata relating to the depedency node
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The version alias of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line276">line 276</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getDependencyAliases"><span class="type-signature"></span>getDependencyAliases<span class="signature">(name)</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieve the list of the registered aliases for the real depedency node with the name provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line216">line 216</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A list of registered aliases for the real depedency node with the name provided
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;String></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getDependencyData"><span class="type-signature"></span>getDependencyData<span class="signature">(name)</span><span class="type-signature"> &rarr; {Any}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieve the data stored against the real depedency node with the name provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line186">line 186</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Any data stored against the depedency node with the name provided
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Any</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getDependencyMetadata"><span class="type-signature"></span>getDependencyMetadata<span class="signature">(name)</span><span class="type-signature"> &rarr; {DependencyMetadata}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieve the metadata for the real depedency node with the name provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line196">line 196</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    An object containing the metadata for the depedency node with the name provided
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">DependencyMetadata</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getDependencyVersion"><span class="type-signature"></span>getDependencyVersion<span class="signature">(name)</span><span class="type-signature"> &rarr; {String}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieve the declared version for the real depedency node with the name provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line206">line 206</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A version string for the real depedency node with the name provided
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="listAllRealDependencies"><span class="type-signature"></span>listAllRealDependencies<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Get a list of all of the real dependencies currently registered with the depedency graph.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - A list of names of the real dependencies currently registered with the depedency graph
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;String></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="listDependantsOfDependency"><span class="type-signature"></span>listDependantsOfDependency<span class="signature">(name)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieve a list of dependants for the real dependency node with the name provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line236">line 236</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - A key value store of real depedencies node names and their declared versions
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="listDependenciesOfDependency"><span class="type-signature"></span>listDependenciesOfDependency<span class="signature">(name)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieve a list of depedencies for the real dependency node with the name provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the depedency node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_graph_graph.js.html">lib/graph/graph.js</a>, <a href="lib_graph_graph.js.html#line226">line 226</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - A key value store of real depedencies node names and their targeted aliases
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -1401,13 +3198,13 @@ second argument. If either of the depedency names cannot be found in the nodes l
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BaseGraph.html">BaseGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#generateDeclaredDependenciesGraph">generateDeclaredDependenciesGraph</a></li><li><a href="global.html#generateImportedDependenciesGraph">generateImportedDependenciesGraph</a></li><li><a href="global.html#listDirectoryChildren">listDirectoryChildren</a></li><li><a href="global.html#listInstalledDependencies">listInstalledDependencies</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BaseGraph.html">BaseGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li><li><a href="InternalGraph.html">InternalGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#firstDefinedProperty">firstDefinedProperty</a></li><li><a href="global.html#generateDeclaredDependenciesGraph">generateDeclaredDependenciesGraph</a></li><li><a href="global.html#generateImportedDependenciesGraph">generateImportedDependenciesGraph</a></li><li><a href="global.html#listDirectoryChildren">listDirectoryChildren</a></li><li><a href="global.html#listInstalledDependencies">listInstalledDependencies</a></li><li><a href="global.html#makeCaseInsensitive">makeCaseInsensitive</a></li><li><a href="global.html#pushToArray">pushToArray</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 18:08:41 GMT+0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Feb 15 2017 18:18:46 GMT+0000 (GMT)
 </footer>
 
 <script> prettyPrint(); </script>

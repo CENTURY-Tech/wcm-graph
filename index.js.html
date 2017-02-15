@@ -38,6 +38,8 @@ var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _argument
 const R = require("ramda");
 const graph_1 = require("./lib/graph/graph");
 const filesystem_1 = require("./lib/filesystem/filesystem");
+const utilities_1 = require("./lib/utilities/utilities");
+const nodeNameFrom = graph_1.BaseGraph.stringifyDependencyMetadata;
 /**
  * An asynchronous function that will prepare and return a dependency graph representing the inter-dependencies within
  * the project at the path provided.
@@ -50,16 +52,15 @@ const filesystem_1 = require("./lib/filesystem/filesystem");
 function generateDeclaredDependenciesGraph(projectPath, packageManager) {
     "use strict";
     return __awaiter(this, void 0, void 0, function* () {
-        let dependencyGraph = new graph_1.DependencyGraph();
-        const readDependencyJson = filesystem_1.readDependenciesJson(packageManager, projectPath);
-        for (let dependency of yield filesystem_1.listInstalledDependencies(projectPath, packageManager)) {
-            const json = yield readDependencyJson(dependency);
-            dependencyGraph.addNode(graph_1.BaseGraph.stringifyDependencyName({ name: json.name, version: getVersion(json) }), {});
-            function getVersion(dependencyJson) {
-                return dependencyJson["version"] || dependencyJson["_release"];
+        const dependencyGraph = new graph_1.DependencyGraph();
+        yield registerDeclaredDependencies(dependencyGraph, projectPath, packageManager);
+        yield registerImpliedDependencies(dependencyGraph);
+        for (let dependencyName of dependencyGraph.listAllRealDependencies()) {
+            const dependencyData = dependencyGraph.getDependencyData(dependencyName);
+            for (let [name, version] of R.toPairs(dependencyData.dependencies)) {
+                dependencyGraph.createInterDependency(dependencyName, { name, version });
             }
         }
-        console.log(JSON.stringify(dependencyGraph.listNodes(), null, 4));
         return Promise.resolve(dependencyGraph);
     });
 }
@@ -80,26 +81,87 @@ function generateImportedDependenciesGraph(projectPath, entryPath) {
     });
 }
 exports.generateImportedDependenciesGraph = generateImportedDependenciesGraph;
-function* processProjectDependency(dependencyName, dependencyGraph, readDependencyJson) {
-    "use strict";
-    let dependencyPairs;
-    yield readDependencyJson(dependencyName)
-        .then((dependencyJson) => {
-        dependencyPairs = R.toPairs(dependencyJson);
-        return dependencyName;
-    });
-    for (let [dependencyName, dependencyVersion] of dependencyPairs) {
-        if (!dependencyGraph.hasNode(dependencyName)) {
-            yield* processProjectDependency(dependencyName, dependencyGraph, readDependencyJson);
+/**
+ * Register each of the declared dependencies from the project at the path provided.
+ *
+ * @private
+ *
+ * @param {DependencyGraph} dependencyGraph - The dependency graph to register against
+ * @param {String}          projectPath     - The full path to the project
+ * @param {String}          packageManager  - The package manger used in the project
+ *
+ * @returns {Promise&lt;Void>}
+ */
+function registerDeclaredDependencies(dependencyGraph, projectPath, packageManager) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let dependencyJson of yield readInstalledDependenciesJson(projectPath, packageManager)) {
+            dependencyGraph.addRealDependency(getDependencyMetadata(dependencyJson), dependencyJson);
         }
-    }
+    });
 }
-function addDependencyToGraph(dependencyGraph) {
-    return (name, version) => {
-        dependencyGraph.addNode(graph_1.DependencyGraph.stringifyDependencyName({ name, version }), null);
-    };
+/**
+ * Register each of the implied dependencies specified by the declared dependencies already registered.
+ *
+ * @private
+ *
+ * @param {DependencyGraph} dependencyGraph - The dependency graph to register against
+ *
+ * @returns {Promise&lt;Void>}
+ */
+function registerImpliedDependencies(dependencyGraph) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let [name, version] of getAllDependencyPairs(dependencyGraph)) {
+            if (!R.contains(version, dependencyGraph.getDependencyAliases(name))) {
+                dependencyGraph.addImpliedDependency({ name, version });
+            }
+        }
+    });
 }
-generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-learn", "bower");
+/**
+ * Retrieve an array of the installed dependencies JSON.
+ *
+ * @private
+ *
+ * @param {String} projectPath    - The full path to the project
+ * @param {String} packageManager - The package manger used in the project
+ *
+ * @returns {Promise&lt;DependencyJson[]>} A list of the installed dependencies JSON files
+ */
+function readInstalledDependenciesJson(projectPath, packageManager) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return Promise.all((yield filesystem_1.listInstalledDependencies(projectPath, packageManager)).map(filesystem_1.readDependenciesJson(projectPath, packageManager)));
+    });
+}
+/**
+ * Retrieve the dependency metadata from the dependency JSON.
+ *
+ * @private
+ *
+ * @param {DependencyJson} dependencyJson - The dependency JSON
+ *
+ * @return {DependencyMetadata} A object containing the dependencys name and version
+ */
+function getDependencyMetadata(dependencyJson) {
+    return { name: dependencyJson.name, version: utilities_1.firstDefinedProperty(["version", "_release"])(dependencyJson) };
+}
+/**
+ * Retrieve the child dependencies of the dependencies currently registered against the provided dependency graph.
+ *
+ * @private
+ *
+ * @param {DependencyGraph} dependencyGraph - The dependency graph to register against
+ *
+ * @returns {String[][]} The child dependencies as an array of arrays of strings
+ */
+function getAllDependencyPairs(dependencyGraph) {
+    return R.compose(R.unnest, R.map(R.compose(getDependencyPairs, dependencyGraph.getDependencyData)))(dependencyGraph.listAllRealDependencies());
+}
+function getDependencyPairs(dependencyJson) {
+    return R.toPairs(R.prop("dependencies", dependencyJson));
+}
+generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-learn", "bower")
+    .then(graph => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4)))
+    .catch(err => console.log(err));
 </code></pre>
         </article>
     </section>
@@ -110,13 +172,13 @@ generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-lear
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BaseGraph.html">BaseGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#generateDeclaredDependenciesGraph">generateDeclaredDependenciesGraph</a></li><li><a href="global.html#generateImportedDependenciesGraph">generateImportedDependenciesGraph</a></li><li><a href="global.html#listDirectoryChildren">listDirectoryChildren</a></li><li><a href="global.html#listInstalledDependencies">listInstalledDependencies</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BaseGraph.html">BaseGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li><li><a href="InternalGraph.html">InternalGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#firstDefinedProperty">firstDefinedProperty</a></li><li><a href="global.html#generateDeclaredDependenciesGraph">generateDeclaredDependenciesGraph</a></li><li><a href="global.html#generateImportedDependenciesGraph">generateImportedDependenciesGraph</a></li><li><a href="global.html#listDirectoryChildren">listDirectoryChildren</a></li><li><a href="global.html#listInstalledDependencies">listInstalledDependencies</a></li><li><a href="global.html#makeCaseInsensitive">makeCaseInsensitive</a></li><li><a href="global.html#pushToArray">pushToArray</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 18:08:41 GMT+0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Feb 15 2017 18:18:46 GMT+0000 (GMT)
 </footer>
 
 <script> prettyPrint(); </script>
