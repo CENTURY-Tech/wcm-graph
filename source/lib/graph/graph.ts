@@ -16,7 +16,15 @@ export interface GraphNode {
   data?: Object;
   version?: string;
   aliases?: string[];
-}
+};
+
+/**
+ * An interface representing a generic key value store
+ */
+export interface KeyValue<T> {
+  [x: string]: T;
+};
+
 
 /**
  * A weakmap of the depedency graph nodes.
@@ -24,7 +32,7 @@ export interface GraphNode {
  * @private
  */
 export const __nodes = new WeakMap();
-const getNodes = (key: any): { [x: string]: GraphNode; } => makeCaseInsensitive(__nodes.get(key));
+const getNodes = (key: any): KeyValue<GraphNode> => makeCaseInsensitive(__nodes.get(key));
 const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
 
 /**
@@ -33,7 +41,7 @@ const setNodes = (key: any, value: any): void => void __nodes.set(key, value);
  * @private
  */
 export const __relations = new WeakMap();
-const getRelations = (key: any): { [x: string]: { [x: string]: string; } } => makeCaseInsensitive(__relations.get(key));
+const getRelations = (key: any): KeyValue<KeyValue<string>> => makeCaseInsensitive(__relations.get(key));
 const setRelations = (key: any, value: any): void => void __relations.set(key, value);
 
 /**
@@ -147,6 +155,7 @@ export class InternalGraph extends BaseGraph {
    *
    * @param {String} from - The name of the dependant
    * @param {String} to   - The name of the dependency
+   * @param {Any}    data - The data to map to the relationship
    *
    * @returns {Void}
    */
@@ -177,9 +186,9 @@ export class InternalGraph extends BaseGraph {
    *
    * @param {String} of - The name of the node
    *
-   * @returns {String[]} A list of nodes that the node with the provided name depends upon
+   * @returns {Object} A map of node names and their relationship data that the node with the provided name relies on
    */
-  __listDependencies: (of: string) => { [x: string]: string; } = (
+  __listDependencies: (of: string) => KeyValue<string> = (
     getRelation(this)
   );
 
@@ -190,10 +199,10 @@ export class InternalGraph extends BaseGraph {
    *
    * @param {String} of - The name of the node
    *
-   * @returns {String[]} A list of nodes that rely upon the node with the provided name
+   * @returns {Object} A map of node names and their relationship data that rely on the node with the provided name
    */
-  __listDependants: (of: string) => { [x: string]: string; } = (
-    (x: string) => R.pickBy<any, { [x: string]: string; }>((y) => R.contains(x, R.keys(y)), getRelations(this))
+  __listDependants: (of: string) => KeyValue<string> = (
+    (x: string) => R.mapObjIndexed<any, any>(R.prop(x), R.pickBy((y) => R.contains(x, R.keys(y)), getRelations(this)))
   );
 
 }
@@ -235,31 +244,109 @@ export class DependencyGraph extends InternalGraph {
     R.ifElse(versionExists(this, name), versionAlreadyExistsErr(name), pushToArray(this.__getNode(name).aliases))(version);
   }
 
+  /**
+   * Get a list of all of the real dependencies currently registered with the depedency graph.
+   *
+   * @function
+   *
+   * @returns {String[]} - A list of names of the real dependencies currently registered with the depedency graph
+   */
   listAllRealDependencies: () => string[] = (
     this.__listNodes
   );
 
+  /**
+   * Retrieve the data stored against the real depedency node with the name provided.
+   *
+   * @function
+   *
+   * @param {String} name - The name of the depedency node
+   *
+   * @returns {Any} Any data stored against the depedency node with the name provided
+   */
   getDependencyData: (name: string) => any = (
     (x: string) => R.prop("data", this.__getNode(x))
   );
 
+  /**
+   * Retrieve the metadata for the real depedency node with the name provided.
+   *
+   * @function
+   *
+   * @param {String} name - The name of the depedency node
+   *
+   * @returns {DependencyMetadata} An object containing the metadata for the depedency node with the name provided
+   */
+  getDependencyMetadata: (name: string) => DependencyMetadata = (
+    (x: string) => ({ name: x, version: R.prop<string>("version", this.__getNode(x)) })
+  );
+
+  /**
+   * Retrieve the declared version for the real depedency node with the name provided.
+   *
+   * @function
+   *
+   * @param {String} name - The name of the depedency node
+   *
+   * @returns {String} A version string for the real depedency node with the name provided
+   */
   getDependencyVersion: (name: string) => any = (
     (x: string) => R.prop("version", this.__getNode(x))
   );
 
+  /**
+   * Retrieve the list of the registered aliases for the real depedency node with the name provided.
+   *
+   * @function
+   *
+   * @param {String} name - The name of the depedency node
+   *
+   * @returns {String[]} A list of registered aliases for the real depedency node with the name provided
+   */
   getDependencyAliases: (name: string) => string[] = (
     ((ref) => (x: string) => R.path<string[]>([x, "aliases"], ref))(getNodes(this))
   );
 
+  /**
+   * Create a relationship from a real dependency node to a specific depedency alias. This alias may or may not point to
+   * a real depedency.
+   *
+   * @param {String} from       - The name of the dependant node`
+   * @param {Object} to         - The metadata relating to the depedency node
+   * @param {String} to.name    - The name of the depedency node
+   * @param {String} to.version - The version alias of the depedency node
+   *
+   * @returns {Void}
+   */
   createInterDependency(from: string, to: DependencyMetadata): void {
     this.__markDependency(from, to.name, to.version);
   }
 
-  listDependenciesOfDependency: (name: string) => { [x: string]: string; } = (
+
+
+  /**
+   * Retrieve a list of depedencies for the real dependency node with the name provided.
+   *
+   * @function
+   *
+   * @param {String} name - The name of the depedency node
+   *
+   * @returns {Object} - A key value store of real depedencies node names and their targeted aliases
+   */
+  listDependenciesOfDependency: (name: string) => KeyValue<string> = (
     this.__listDependencies
   );
 
-  listDependantsOfDependency: (name: string) => { [x: string]: string; } = (
+  /**
+   * Retrieve a list of dependants for the real dependency node with the name provided.
+   *
+   * @function
+   *
+   * @param {String} name - The name of the depedency node
+   *
+   * @returns {Object} - A key value store of real depedencies node names and their declared versions
+   */
+  listDependantsOfDependency: (name: string) => KeyValue<string> = (
     R.compose<any, any, any, any>(R.map(R.curry(R.pick)(["name", "version"])), R.map(this.getDependencyData), this.__listDependants)
   );
 
@@ -300,7 +387,7 @@ function nodeExists(scope: any): (name: string) => boolean {
  *
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
-function getRelation(scope: any): (name: string) => { [x: string]: string; } {
+function getRelation(scope: any): (name: string) => KeyValue<string> {
   return R.flip(R.prop)(getRelations(scope));
 }
 

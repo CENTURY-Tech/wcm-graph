@@ -135,8 +135,8 @@ describe("Graph", () => {
      * Tests for the instance method "markDependency".
      */
     describe("Method: '__markDependency'", () => {
-      it("should accept 2 parameters", () => {
-        assert.strictEqual(internalGraph.__markDependency.length, 2);
+      it("should accept 3 parameters", () => {
+        assert.strictEqual(internalGraph.__markDependency.length, 3);
       });
 
       it("should fail when the 'from' node has not been added", () => {
@@ -157,7 +157,7 @@ describe("Graph", () => {
         graph.__nodes.get(internalGraph).bar = "baz";
         graph.__relations.get(internalGraph).foo = [];
         internalGraph.__markDependency("foo", "bar", null);
-        assert.deepEqual(graph.__relations.get(internalGraph).foo, ["bar"]);
+        assert.deepEqual(graph.__relations.get(internalGraph).foo, { bar: null });
       });
     });
 
@@ -170,7 +170,7 @@ describe("Graph", () => {
       });
 
       it("should return 'true' when a relationship between the 'from' and 'to' nodes is found", () => {
-        graph.__relations.get(internalGraph).foo = ["bar"];
+        graph.__relations.get(internalGraph).foo = { bar: null };
         assert.equal(internalGraph.__hasDependency("foo", "bar"), true);
       });
 
@@ -188,8 +188,9 @@ describe("Graph", () => {
       });
 
       it("should return the dependencies of the 'of' node", () => {
-        graph.__relations.get(internalGraph).foo = ["bar"];
-        assert.deepEqual(internalGraph.__listDependencies("foo"), ["bar"]);
+        graph.__relations.get(internalGraph).foo = { bar: 1, baz: 2 };
+        graph.__relations.get(internalGraph).baz = { bar: 3, foo: 4 };
+        assert.deepEqual(internalGraph.__listDependencies("foo"), { bar: 1, baz: 2 });
       });
     });
 
@@ -202,8 +203,9 @@ describe("Graph", () => {
       });
 
       it("should return the dependants of the 'of' node", () => {
-        graph.__relations.get(internalGraph).foo = ["bar"];
-        assert.deepEqual(internalGraph.__listDependants("bar"), ["foo"]);
+        graph.__relations.get(internalGraph).foo = { bar: 1, baz: 2 };
+        graph.__relations.get(internalGraph).baz = { bar: 3, foo: 4 };
+        assert.deepEqual(internalGraph.__listDependants("bar"), { foo: 1, baz: 3 });
       });
     });
   });
