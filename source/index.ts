@@ -1,7 +1,6 @@
-import * as R from "ramda";
-import * as path from "path";
+import { compose, contains, map, prop, toPairs, unnest } from "ramda";
+import { DependencyJson, listInstalledDependencies, PackageManager, readDependenciesJson } from "./lib/filesystem/filesystem";
 import { BaseGraph, DependencyGraph, DependencyMetadata } from "./lib/graph/graph";
-import { PackageManager, DependencyJson, readDependenciesJson, listInstalledDependencies } from "./lib/filesystem/filesystem";
 import { firstDefinedProperty } from "./lib/utilities/utilities";
 
 const nodeNameFrom = BaseGraph.stringifyDependencyMetadata;
@@ -26,7 +25,7 @@ export async function generateDeclaredDependenciesGraph(projectPath: string, pac
   for (let dependencyName of dependencyGraph.listAllRealDependencies()) {
     const dependencyData = dependencyGraph.getDependencyData(dependencyName);
 
-    for (let [name, version] of R.toPairs<string, string>(dependencyData.dependencies)){
+    for (let [name, version] of toPairs<string, string>(dependencyData.dependencies)){
       dependencyGraph.createInterDependency(dependencyName, {name, version});
     }
   }
@@ -77,7 +76,7 @@ async function registerDeclaredDependencies(dependencyGraph: DependencyGraph, pr
  */
 async function registerImpliedDependencies(dependencyGraph: DependencyGraph): Promise<void> {
   for (let [name, version] of getAllDependencyPairs(dependencyGraph)) {
-    if (!R.contains(version, dependencyGraph.getDependencyAliases(name))) {
+    if (!contains(version, dependencyGraph.getDependencyAliases(name))) {
       dependencyGraph.addImpliedDependency({ name, version });
     }
   }
@@ -120,13 +119,13 @@ function getDependencyMetadata(dependencyJson: DependencyJson): DependencyMetada
  * @returns {String[][]} The child dependencies as an array of arrays of strings
  */
 function getAllDependencyPairs(dependencyGraph: DependencyGraph): string[][] {
-  return R.compose(R.unnest, R.map(R.compose(getDependencyPairs, dependencyGraph.getDependencyData)))(dependencyGraph.listAllRealDependencies());
+  return compose(unnest, map(compose(getDependencyPairs, dependencyGraph.getDependencyData)))(dependencyGraph.listAllRealDependencies());
 }
 
 function getDependencyPairs(dependencyJson: DependencyJson): string[][] {
-  return R.toPairs<string, string>(R.prop("dependencies", dependencyJson));
+  return toPairs<string, string>(prop("dependencies", dependencyJson));
 }
 
 generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-learn", "bower")
-  .then(graph => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4)))
-  .catch(err => console.log(err));
+  .then((graph) => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4)))
+  .catch((err) => console.log(err));

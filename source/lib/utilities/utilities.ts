@@ -1,4 +1,4 @@
-import * as R from "ramda";
+import { compose, curry, head, intersection, keys, prop } from "ramda";
 
 /**
  * Find and return the first defined property from within the list of provided properties from the object later
@@ -10,7 +10,7 @@ import * as R from "ramda";
  */
 export function firstDefinedProperty(props: string[]): (obj: Object) => any {
   return (obj: Object): any => {
-    return R.prop(R.compose(R.head, R.curry(R.intersection)(props), R.keys)(obj), obj);
+    return prop(compose(head, curry(intersection)(props), keys)(obj), obj);
   };
 }
 
@@ -38,7 +38,7 @@ export function makeCaseInsensitive<T>(target: T): T {
   return new Proxy<T>(target, {
     get: caseInsensitivePropGet,
     set: caseInsensitivePropSet,
-    getOwnPropertyDescriptor: caseInsensitivePropDescriptor
+    getOwnPropertyDescriptor: caseInsensitivePropDescriptor,
   });
 }
 
@@ -90,7 +90,6 @@ function caseInsensitivePropDescriptor<T>(target: T, prop: string): Object | und
     value,
     writable: true,
     enumerable: true,
-    configurable: true
+    configurable: true,
   } : undefined;
 }
-

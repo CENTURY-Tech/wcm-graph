@@ -1,8 +1,8 @@
-import * as R from "ramda";
-import * as fs from "fs-promise";
-import * as path from "path";
+import { readdir, readJson, statSync } from "fs-promise";
 import * as bowerJSON from "gist-bower-json";
 import * as packageJSON from "gist-package-json";
+import { resolve, sep } from "path";
+import { curry, curryN, filter, last, map, pipe, split, test } from "ramda";
 
 /**
  * An interface representing the Bower JSON files.
@@ -35,22 +35,22 @@ export function readDependenciesJson(projectPath: string, packageManager: Packag
 
 export function readDependencyBowerJson(projectPath: string): (dependencyName: string) => Promise<BowerJson> {
   return (dependencyName: string) => {
-    return readBowerJson(path.resolve(projectPath, "bower_components", dependencyName));
+    return readBowerJson(resolve(projectPath, "bower_components", dependencyName));
   };
 }
 
 export function readDependencyPackageJson(projectPath: string): (dependencyName: string) => Promise<PackageJson> {
   return (dependencyName: string) => {
-    return readPackageJson(path.resolve(projectPath, "node_modules", dependencyName));
+    return readPackageJson(resolve(projectPath, "node_modules", dependencyName));
   };
 }
 
 export async function readBowerJson(projectPath: string): Promise<BowerJson> {
-  return fs.readJson(path.resolve(projectPath, ".bower.json"));
+  return readJson(resolve(projectPath, ".bower.json"));
 }
 
 export async function readPackageJson(projectPath: string): Promise<PackageJson> {
-  return fs.readJson(path.resolve(projectPath, "package.json"));
+  return readJson(resolve(projectPath, "package.json"));
 }
 
 /**
@@ -65,9 +65,9 @@ export async function readPackageJson(projectPath: string): Promise<PackageJson>
 export async function listInstalledDependencies(projectPath: string, packageManager: PackageManager): Promise<string[]> {
   switch (packageManager) {
     case "bower":
-      return listDirectoryChildren(path.resolve(projectPath, "bower_components")).then(extractFolderNamesSync);
+      return listDirectoryChildren(resolve(projectPath, "bower_components")).then(extractFolderNamesSync);
     case "npm":
-      return listDirectoryChildren(path.resolve(projectPath, "node_modules")).then(extractFolderNamesSync);
+      return listDirectoryChildren(resolve(projectPath, "node_modules")).then(extractFolderNamesSync);
   }
 }
 
@@ -79,7 +79,7 @@ export async function listInstalledDependencies(projectPath: string, packageMana
  * @returns {String[]} A list of fully qualified paths for the children of the directory at the path provided
  */
 export async function listDirectoryChildren(directoryPath: string): Promise<string[]> {
-  return fs.readdir(directoryPath).then(R.map<string, string>(R.curryN(2, path.resolve)(directoryPath)));
+  return readdir(directoryPath).then(map<string, string>(curryN(2, resolve)(directoryPath)));
 }
 
 /**
@@ -92,7 +92,7 @@ export async function listDirectoryChildren(directoryPath: string): Promise<stri
  * @returns {String[]} A list of directory names retrieved from the list of fully qualified paths provided
  */
 function extractFolderNamesSync(paths: string[]): string[] {
-  return R.pipe(extractFoldersSync, extractPathEndingsSync, filterDotFiles)(paths);
+  return pipe(extractFoldersSync, extractPathEndingsSync, filterDotFiles)(paths);
 }
 
 /**
@@ -105,7 +105,7 @@ function extractFolderNamesSync(paths: string[]): string[] {
  * @returns {String[]} A list of full directory paths extracted from the list of fully qualified paths provided
  */
 function extractFoldersSync(paths: string[]): string[] {
-  return paths.filter(item => fs.statSync(item).isDirectory());
+  return paths.filter((item) => statSync(item).isDirectory());
 }
 
 /**
@@ -118,7 +118,7 @@ function extractFoldersSync(paths: string[]): string[] {
  * @returns {String[]} A list of path endings extracted from the list of fully qualified paths provided
  */
 function extractPathEndingsSync(paths: string[]): string[] {
-  return paths.map(R.pipe(R.split(path.sep), R.last as (x: string[]) => string));
+  return paths.map(pipe(split(sep), last as (x: string[]) => string));
 }
 
 /**
@@ -131,5 +131,5 @@ function extractPathEndingsSync(paths: string[]): string[] {
  * @returns {String[]} A list of filenames that are not hidden
  */
 function filterDotFiles(filesname: string[]): string[] {
-  return R.filter(R.test(/^\w/), filesname);
+  return filter(test(/^\w/), filesname);
 }

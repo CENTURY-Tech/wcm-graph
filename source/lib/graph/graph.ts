@@ -1,5 +1,8 @@
-import * as R from "ramda";
-import { pushToArray, makeCaseInsensitive } from "../utilities/utilities";
+import {
+  compose, contains, curry, flip, fromPairs, has, ifElse, join, keys, map, mapObjIndexed, pair, path, pick, pickBy,
+  prop, split, transpose, unless, values, when
+} from "ramda";
+import { makeCaseInsensitive, pushToArray } from "../utilities/utilities";
 
 /**
  * An interface representing optional depedency metadata.
@@ -24,7 +27,6 @@ export interface GraphNode {
 export interface KeyValue<T> {
   [x: string]: T;
 };
-
 
 /**
  * A weakmap of the depedency graph nodes.
@@ -68,8 +70,8 @@ export class BaseGraph {
    *
    * @returns {String} A stringified depedency name
    */
-  static stringifyDependencyMetadata: (opts: DependencyMetadata) => string = (
-    R.compose(R.join("@"), R.values)
+  public static stringifyDependencyMetadata: (opts: DependencyMetadata) => string = (
+    compose(join("@"), values)
   );
 
   /**
@@ -81,8 +83,8 @@ export class BaseGraph {
    *
    * @returns {Object} A parsed depedency name
    */
-  static parseDependencyMetadata: (value: string) => DependencyMetadata = (
-    R.compose(R.fromPairs as (x: string[][]) => DependencyMetadata, R.transpose, R.curry(R.pair)(["name", "version"]), R.split(/@/))
+  public static parseDependencyMetadata: (value: string) => DependencyMetadata = (
+    compose(fromPairs as (x: string[][]) => DependencyMetadata, transpose, curry(pair)(["name", "version"]), split(/@/))
   );
 
 }
@@ -104,8 +106,8 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Void}
    */
-  __addNode(name: string, data: any): void {
-    R.when(nodeExists(this), nodeAlreadyExistsErr)(name);
+  public __addNode(name: string, data: any): void {
+    when(nodeExists(this), nodeAlreadyExistsErr)(name);
 
     getNodes(this)[name] = data;
     getRelations(this)[name] = {};
@@ -121,8 +123,8 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Any} Any data stored against the graph at the node with the name provided
    */
-  __getNode: (name: string) => GraphNode = (
-    R.ifElse(nodeExists(this), getNode(this), noNodeFoundErr)
+  public __getNode: (name: string) => GraphNode = (
+    ifElse(nodeExists(this), getNode(this), noNodeFoundErr)
   );
 
   /**
@@ -134,7 +136,7 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Boolean} Whether or not the graph has a node with the name provided
    */
-  __hasNode(name: string): boolean {
+  public __hasNode(name: string): boolean {
     return nodeExists(this)(name);
   }
 
@@ -145,8 +147,8 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {String[]} An array of node names that have been previously added to the graph
    */
-  __listNodes: () => string[] = (
-    ((ref) => () => R.keys(ref))(getNodes(this))
+  public __listNodes: () => string[] = (
+    ((ref) => () => keys(ref))(getNodes(this))
   );
 
   /**
@@ -159,8 +161,8 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Void}
    */
-  __markDependency(from: string, to: string, data: any): void {
-    R.map(R.unless(nodeExists(this), noNodeFoundErr))([from, to]);
+  public __markDependency(from: string, to: string, data: any): void {
+    map(unless(nodeExists(this), noNodeFoundErr))([from, to]);
 
     getRelation(this)(from)[to] = data;
   }
@@ -175,7 +177,7 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Boolean} Whether or not a relationship exists from the 'from' node to the 'to' node
    */
-  __hasDependency: (from: string, to: string) => boolean = (
+  public __hasDependency: (from: string, to: string) => boolean = (
     relationExists(this)
   );
 
@@ -188,7 +190,7 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Object} A map of node names and their relationship data that the node with the provided name relies on
    */
-  __listDependencies: (of: string) => KeyValue<string> = (
+  public __listDependencies: (of: string) => KeyValue<string> = (
     getRelation(this)
   );
 
@@ -201,8 +203,8 @@ export class InternalGraph extends BaseGraph {
    *
    * @returns {Object} A map of node names and their relationship data that rely on the node with the provided name
    */
-  __listDependants: (of: string) => KeyValue<string> = (
-    (x: string) => R.mapObjIndexed<any, any>(R.prop(x), R.pickBy((y) => R.contains(x, R.keys(y)), getRelations(this)))
+  public __listDependants: (of: string) => KeyValue<string> = (
+    (x: string) => mapObjIndexed<any, any>(prop(x), pickBy((y) => contains(x, keys(y)), getRelations(this)))
   );
 
 }
@@ -226,7 +228,7 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {Void}
    */
-  addRealDependency({name, version}: DependencyMetadata, data: any): void {
+  public addRealDependency({ name, version }: DependencyMetadata, data: any): void {
     super.__addNode(name, { data, version, aliases: [version] });
   }
 
@@ -240,8 +242,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {Void}
    */
-  addImpliedDependency({name, version}: DependencyMetadata): void {
-    R.ifElse(versionExists(this, name), versionAlreadyExistsErr(name), pushToArray(this.__getNode(name).aliases))(version);
+  public addImpliedDependency({ name, version }: DependencyMetadata): void {
+    ifElse(versionExists(this, name), versionAlreadyExistsErr(name), pushToArray(this.__getNode(name).aliases))(version);
   }
 
   /**
@@ -251,7 +253,7 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {String[]} - A list of names of the real dependencies currently registered with the depedency graph
    */
-  listAllRealDependencies: () => string[] = (
+  public listAllRealDependencies: () => string[] = (
     this.__listNodes
   );
 
@@ -264,8 +266,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {Any} Any data stored against the depedency node with the name provided
    */
-  getDependencyData: (name: string) => any = (
-    (x: string) => R.prop("data", this.__getNode(x))
+  public getDependencyData: (name: string) => any = (
+    (x: string) => prop("data", this.__getNode(x))
   );
 
   /**
@@ -277,8 +279,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {DependencyMetadata} An object containing the metadata for the depedency node with the name provided
    */
-  getDependencyMetadata: (name: string) => DependencyMetadata = (
-    (x: string) => ({ name: x, version: R.prop<string>("version", this.__getNode(x)) })
+  public getDependencyMetadata: (name: string) => DependencyMetadata = (
+    (x: string) => ({ name: x, version: prop<string>("version", this.__getNode(x)) })
   );
 
   /**
@@ -290,8 +292,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {String} A version string for the real depedency node with the name provided
    */
-  getDependencyVersion: (name: string) => any = (
-    (x: string) => R.prop("version", this.__getNode(x))
+  public getDependencyVersion: (name: string) => any = (
+    (x: string) => prop("version", this.__getNode(x))
   );
 
   /**
@@ -303,8 +305,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {String[]} A list of registered aliases for the real depedency node with the name provided
    */
-  getDependencyAliases: (name: string) => string[] = (
-    ((ref) => (x: string) => R.path<string[]>([x, "aliases"], ref))(getNodes(this))
+  public getDependencyAliases: (name: string) => string[] = (
+    ((ref) => (x: string) => path<string[]>([x, "aliases"], ref))(getNodes(this))
   );
 
   /**
@@ -318,11 +320,9 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {Void}
    */
-  createInterDependency(from: string, to: DependencyMetadata): void {
+  public createInterDependency(from: string, to: DependencyMetadata): void {
     this.__markDependency(from, to.name, to.version);
   }
-
-
 
   /**
    * Retrieve a list of depedencies for the real dependency node with the name provided.
@@ -333,7 +333,7 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {Object} - A key value store of real depedencies node names and their targeted aliases
    */
-  listDependenciesOfDependency: (name: string) => KeyValue<string> = (
+  public listDependenciesOfDependency: (name: string) => KeyValue<string> = (
     this.__listDependencies
   );
 
@@ -346,8 +346,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {Object} - A key value store of real depedencies node names and their declared versions
    */
-  listDependantsOfDependency: (name: string) => KeyValue<string> = (
-    R.compose<any, any, any, any>(R.map(R.curry(R.pick)(["name", "version"])), R.map(this.getDependencyData), this.__listDependants)
+  public listDependantsOfDependency: (name: string) => KeyValue<string> = (
+    compose<any, any, any, any>(map(curry(pick)(["name", "version"])), map(this.getDependencyData), this.__listDependants)
   );
 
 }
@@ -362,7 +362,7 @@ export class DependencyGraph extends InternalGraph {
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
 function getNode(scope: any): (name: string) => GraphNode {
-  return R.flip(R.prop)(getNodes(scope));
+  return flip(prop)(getNodes(scope));
 }
 
 /**
@@ -375,7 +375,7 @@ function getNode(scope: any): (name: string) => GraphNode {
  * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
  */
 function nodeExists(scope: any): (name: string) => boolean {
-  return R.flip(R.has)(getNodes(scope));
+  return flip(has)(getNodes(scope));
 }
 
 /**
@@ -388,7 +388,7 @@ function nodeExists(scope: any): (name: string) => boolean {
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
 function getRelation(scope: any): (name: string) => KeyValue<string> {
-  return R.flip(R.prop)(getRelations(scope));
+  return flip(prop)(getRelations(scope));
 }
 
 /**
@@ -402,7 +402,7 @@ function getRelation(scope: any): (name: string) => KeyValue<string> {
  */
 function relationExists(scope: any): (from: string, to: string) => boolean {
   return (a: string, b: string) => {
-    return R.contains(b, R.keys(getRelation(scope)(a)) || []);
+    return contains(b, keys(getRelation(scope)(a)) || []);
   };
 }
 
@@ -444,7 +444,7 @@ function noNodeFoundErr(name: string): never {
  * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
  */
 function versionExists(scope: any, name: string): (version: string) => boolean {
-  return R.curry((aliases: string[], version: string): boolean => R.contains(version, aliases))(getNode(scope)(name).aliases);
+  return curry((aliases: string[], version: string): boolean => contains(version, aliases))(getNode(scope)(name).aliases);
 }
 
 /**
