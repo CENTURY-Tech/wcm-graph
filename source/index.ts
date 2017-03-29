@@ -1,6 +1,6 @@
 import { compose, contains, map, prop, toPairs, unnest } from "ramda";
-import { DependencyJson, listInstalledDependencies, PackageManager, readDependenciesJson } from "./lib/filesystem/filesystem";
-import { BaseGraph, DependencyGraph, DependencyMetadata } from "./lib/graph/graph";
+import { DependencyJson, IDependencyOptions, listInstalledDependencies, readDependenciesJson } from "./lib/filesystem/filesystem";
+import { BaseGraph, DependencyGraph, IBaseDependencyMetadata } from "./lib/graph/graph";
 import { firstDefinedProperty } from "./lib/utilities/utilities";
 
 const nodeNameFrom = BaseGraph.stringifyDependencyMetadata;
@@ -14,19 +14,19 @@ const nodeNameFrom = BaseGraph.stringifyDependencyMetadata;
  *
  * @returns {Promise<DependencyGraph>} A dependency graph describing the inter-dependencies within the project
  */
-export async function generateDeclaredDependenciesGraph(projectPath: string, packageManager: PackageManager): Promise<DependencyGraph> {
+export async function generateDeclaredDependenciesGraph(opts: IDependencyOptions): Promise<DependencyGraph> {
   "use strict";
 
   const dependencyGraph = new DependencyGraph();
 
-  await registerDeclaredDependencies(dependencyGraph, projectPath, packageManager);
+  await registerDeclaredDependencies(dependencyGraph, opts);
   await registerImpliedDependencies(dependencyGraph);
 
   for (let dependencyName of dependencyGraph.listAllRealDependencies()) {
     const dependencyData = dependencyGraph.getDependencyData(dependencyName);
 
-    for (let [name, version] of toPairs<string, string>(dependencyData.dependencies)){
-      dependencyGraph.createInterDependency(dependencyName, {name, version});
+    for (let [name, version] of toPairs<string, string>(dependencyData.dependencies)) {
+      dependencyGraph.createInterDependency(dependencyName, { name, version });
     }
   }
 
@@ -59,8 +59,8 @@ export async function generateImportedDependenciesGraph(projectPath: string, ent
  *
  * @returns {Promise<Void>}
  */
-async function registerDeclaredDependencies(dependencyGraph: DependencyGraph, projectPath: string, packageManager: PackageManager): Promise<void> {
-  for (let dependencyJson of await readInstalledDependenciesJson(projectPath, packageManager)) {
+async function registerDeclaredDependencies(dependencyGraph: DependencyGraph, opts: IDependencyOptions): Promise<void> {
+  for (let dependencyJson of await readInstalledDependenciesJson(opts)) {
     dependencyGraph.addRealDependency(getDependencyMetadata(dependencyJson), dependencyJson);
   }
 }
@@ -92,8 +92,8 @@ async function registerImpliedDependencies(dependencyGraph: DependencyGraph): Pr
  *
  * @returns {Promise<DependencyJson[]>} A list of the installed dependencies JSON files
  */
-async function readInstalledDependenciesJson(projectPath: string, packageManager: PackageManager): Promise<DependencyJson[]> {
-  return Promise.all((await listInstalledDependencies(projectPath, packageManager)).map(readDependenciesJson(projectPath, packageManager)));
+async function readInstalledDependenciesJson(opts: IDependencyOptions): Promise<DependencyJson[]> {
+  return Promise.all((await listInstalledDependencies(opts)).map(readDependenciesJson(opts)));
 }
 
 /**
@@ -105,7 +105,7 @@ async function readInstalledDependenciesJson(projectPath: string, packageManager
  *
  * @return {DependencyMetadata} A object containing the dependencys name and version
  */
-function getDependencyMetadata(dependencyJson: DependencyJson): DependencyMetadata {
+function getDependencyMetadata(dependencyJson: DependencyJson): IBaseDependencyMetadata {
   return { name: dependencyJson.name, version: firstDefinedProperty(["version", "_release"])(dependencyJson) };
 }
 
@@ -126,6 +126,9 @@ function getDependencyPairs(dependencyJson: DependencyJson): string[][] {
   return toPairs<string, string>(prop("dependencies", dependencyJson));
 }
 
-generateDeclaredDependenciesGraph("/Users/iain.reid/git_repositories/webapp-learn", "bower")
+generateDeclaredDependenciesGraph({
+  packageManager: "bower",
+  projectPath: "/Users/iain.reid/git_repositories/webapp-learn",
+})
   .then((graph) => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4)))
   .catch((err) => console.log(err));

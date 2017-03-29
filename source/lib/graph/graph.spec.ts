@@ -1,5 +1,6 @@
 import { deepEqual, equal, ok, strictEqual, throws } from "assert";
 import * as graph from "./graph";
+import * as storage from "./storage/nodes";
 
 describe("Graph", () => {
   it("should export a class with the name 'BaseGraph'", () => {
@@ -60,12 +61,12 @@ describe("Graph", () => {
 
       it("should add a node with the supplied name", () => {
         internalGraph.__addNode("foo", null);
-        ok(graph.__nodes.has(internalGraph));
+        ok(storage.__nodes.has(internalGraph));
       });
 
       it("should add a node with the supplied data", () => {
         internalGraph.__addNode("foo", "bar");
-        deepEqual(graph.__nodes.get(internalGraph).foo, "bar");
+        deepEqual(storage.__nodes.get(internalGraph).foo, "bar");
       });
 
       it("should fail to add a node with the same name twice", () => {
@@ -86,7 +87,7 @@ describe("Graph", () => {
       });
 
       it("should return data stored against the node name supplied", () => {
-        graph.__nodes.get(internalGraph).foo = "bar";
+        storage.__nodes.get(internalGraph).foo = "bar";
         internalGraph.__getNode("foo");
         equal(internalGraph.__getNode("foo"), "bar");
       });
@@ -107,7 +108,7 @@ describe("Graph", () => {
       });
 
       it("should return 'true' when a node is found with the name supplied", () => {
-        graph.__nodes.get(internalGraph).foo = "bar";
+        storage.__nodes.get(internalGraph).foo = "bar";
         equal(internalGraph.__hasNode("foo"), true);
       });
 
@@ -125,8 +126,8 @@ describe("Graph", () => {
       });
 
       it("should return a list of the previously added nodes", () => {
-        graph.__nodes.get(internalGraph).foo = "bar";
-        graph.__nodes.get(internalGraph).bar = "baz";
+        storage.__nodes.get(internalGraph).foo = "bar";
+        storage.__nodes.get(internalGraph).bar = "baz";
         deepEqual(internalGraph.__listNodes(), ["foo", "bar"]);
       });
     });
@@ -147,17 +148,17 @@ describe("Graph", () => {
 
       it("should fail when the 'to' node has not been added", () => {
         throws(() => {
-          graph.__nodes.get(internalGraph).foo = "bar";
+          storage.__nodes.get(internalGraph).foo = "bar";
           internalGraph.__markDependency("foo", "bar", null);
         }, "No node with the name 'bar' has been added");
       });
 
       it("should add 'to' to the relations array of 'from'", () => {
-        graph.__nodes.get(internalGraph).foo = "bar";
-        graph.__nodes.get(internalGraph).bar = "baz";
-        graph.__relations.get(internalGraph).foo = [];
+        storage.__nodes.get(internalGraph).foo = "bar";
+        storage.__nodes.get(internalGraph).bar = "baz";
+        storage.__relations.get(internalGraph).foo = [];
         internalGraph.__markDependency("foo", "bar", null);
-        deepEqual(graph.__relations.get(internalGraph).foo, { bar: null });
+        deepEqual(storage.__relations.get(internalGraph).foo, { bar: null });
       });
     });
 
@@ -170,7 +171,7 @@ describe("Graph", () => {
       });
 
       it("should return 'true' when a relationship between the 'from' and 'to' nodes is found", () => {
-        graph.__relations.get(internalGraph).foo = { bar: null };
+        storage.__relations.get(internalGraph).foo = { bar: null };
         equal(internalGraph.__hasDependency("foo", "bar"), true);
       });
 
@@ -188,8 +189,8 @@ describe("Graph", () => {
       });
 
       it("should return the dependencies of the 'of' node", () => {
-        graph.__relations.get(internalGraph).foo = { bar: 1, baz: 2 };
-        graph.__relations.get(internalGraph).baz = { bar: 3, foo: 4 };
+        storage.__relations.get(internalGraph).foo = { bar: 1, baz: 2 };
+        storage.__relations.get(internalGraph).baz = { bar: 3, foo: 4 };
         deepEqual(internalGraph.__listDependencies("foo"), { bar: 1, baz: 2 });
       });
     });
@@ -203,8 +204,8 @@ describe("Graph", () => {
       });
 
       it("should return the dependants of the 'of' node", () => {
-        graph.__relations.get(internalGraph).foo = { bar: 1, baz: 2 };
-        graph.__relations.get(internalGraph).baz = { bar: 3, foo: 4 };
+        storage.__relations.get(internalGraph).foo = { bar: 1, baz: 2 };
+        storage.__relations.get(internalGraph).baz = { bar: 3, foo: 4 };
         deepEqual(internalGraph.__listDependants("bar"), { foo: 1, baz: 3 });
       });
     });
@@ -227,27 +228,27 @@ describe("Graph", () => {
 
       it("should add a node with the name provided", () => {
         dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
-        ok(graph.__nodes.get(dependencyGraph).foo);
+        ok(storage.__nodes.get(dependencyGraph).foo);
       });
 
       it("should add a node with the version provided", () => {
         dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
-        equal(graph.__nodes.get(dependencyGraph).foo.version, "1");
+        equal(storage.__nodes.get(dependencyGraph).foo.version, "1");
       });
 
       it("should add a node with the data provided", () => {
         dependencyGraph.addRealDependency({ name: "foo", version: "1" }, "bar");
-        equal(graph.__nodes.get(dependencyGraph).foo.data, "bar");
+        equal(storage.__nodes.get(dependencyGraph).foo.data, "bar");
       });
 
       it("should add a node and add the version to the aliases", () => {
         dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
-        deepEqual(graph.__nodes.get(dependencyGraph).foo.aliases, ["1"]);
+        deepEqual(storage.__nodes.get(dependencyGraph).foo.aliases, ["1"]);
       });
 
       it("should fail to add a node with the same name twice", () => {
         throws(() => {
-          graph.__nodes.get(dependencyGraph).foo = {};
+          storage.__nodes.get(dependencyGraph).foo = {};
           dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
         }, "A node with the name 'foo' already exists");
       });
@@ -262,14 +263,14 @@ describe("Graph", () => {
       });
 
       it("should add an alias to the node with the name provided", () => {
-        graph.__nodes.get(dependencyGraph).foo = { aliases: [] };
+        storage.__nodes.get(dependencyGraph).foo = { aliases: [] };
         dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
-        deepEqual(graph.__nodes.get(dependencyGraph).foo.aliases, ["1"]);
+        deepEqual(storage.__nodes.get(dependencyGraph).foo.aliases, ["1"]);
       });
 
       it("should fail to add a node with the same version twice", () => {
         throws(() => {
-          graph.__nodes.get(dependencyGraph).foo = { aliases: ["1"] };
+          storage.__nodes.get(dependencyGraph).foo = { aliases: ["1"] };
           dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
         }, "Version '1' has already been registed on node 'foo'");
       });

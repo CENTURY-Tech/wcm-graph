@@ -20,26 +20,41 @@ export type PackageJson = packageJSON.IPackageJSON;
 export type PackageManager = "bower" | "npm";
 
 /**
+ * An interface representing the dependency reading methods.
+ */
+export type DependencyReader<T> = (dependencyName: string) => Promise<T>;
+
+/**
+ * An interface representing the dependency readers.
+ */
+export interface IDependencyOptions {
+  projectPath: string;
+  packageManager: PackageManager;
+}
+
+/**
  * An enum of the possible dependency JSON objects.
  */
 export type DependencyJson = BowerJson | PackageJson;
 
-export function readDependenciesJson(projectPath: string, packageManager: PackageManager): (dependencyName: string) => Promise<DependencyJson> {
-  switch (packageManager) {
+export function readDependenciesJson(opts: IDependencyOptions): DependencyReader<DependencyJson> | never {
+  switch (opts.packageManager) {
     case "bower":
-      return readDependencyBowerJson(projectPath);
+      return readDependencyBowerJson(opts.projectPath);
     case "npm":
-      return readDependencyPackageJson(projectPath);
+      return readDependencyPackageJson(opts.projectPath);
+    default:
+      throw Error("A 'packageManager' must be supplied");
   }
 }
 
-export function readDependencyBowerJson(projectPath: string): (dependencyName: string) => Promise<BowerJson> {
+export function readDependencyBowerJson(projectPath: string): DependencyReader<BowerJson> {
   return (dependencyName: string) => {
     return readBowerJson(resolve(projectPath, "bower_components", dependencyName));
   };
 }
 
-export function readDependencyPackageJson(projectPath: string): (dependencyName: string) => Promise<PackageJson> {
+export function readDependencyPackageJson(projectPath: string): DependencyReader<PackageJson> {
   return (dependencyName: string) => {
     return readPackageJson(resolve(projectPath, "node_modules", dependencyName));
   };
@@ -62,12 +77,14 @@ export async function readPackageJson(projectPath: string): Promise<PackageJson>
  *
  * @returns {Promise<String[]>} A list of installed dependencies
  */
-export async function listInstalledDependencies(projectPath: string, packageManager: PackageManager): Promise<string[]> {
-  switch (packageManager) {
+export async function listInstalledDependencies(opts: IDependencyOptions): Promise<string[]> | never {
+  switch (opts.packageManager) {
     case "bower":
-      return listDirectoryChildren(resolve(projectPath, "bower_components")).then(extractFolderNamesSync);
+      return listDirectoryChildren(resolve(opts.projectPath, "bower_components")).then(extractFolderNamesSync);
     case "npm":
-      return listDirectoryChildren(resolve(projectPath, "node_modules")).then(extractFolderNamesSync);
+      return listDirectoryChildren(resolve(opts.projectPath, "node_modules")).then(extractFolderNamesSync);
+    default:
+      throw Error("A 'packageManager' must be supplied");
   }
 }
 

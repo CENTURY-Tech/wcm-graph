@@ -1,4 +1,11 @@
-import { compose, curry, head, intersection, keys, prop } from "ramda";
+import { compose, CurriedFunction2, curry, head, intersection, keys, prop } from "ramda";
+
+/**
+ * An interface representing a generic key value store
+ */
+export interface IKeyValue<T> {
+  [x: string]: T;
+};
 
 /**
  * Find and return the first defined property from within the list of provided properties from the object later
@@ -35,11 +42,11 @@ export function pushToArray(arr: any[]): (value: any) => number {
  * @return {Proxy} A proxy over the target object ensuring that the getters and setters are case insensitive
  */
 export function makeCaseInsensitive<T>(target: T): T {
-  return new Proxy<T>(target, {
+  return new Proxy<T>(target, { // tslint:disable
     get: caseInsensitivePropGet,
     set: caseInsensitivePropSet,
     getOwnPropertyDescriptor: caseInsensitivePropDescriptor,
-  });
+  }); // tslint:enable
 }
 
 /**
@@ -86,10 +93,10 @@ function caseInsensitivePropSet(target: { [x: string]: any }, prop: string, valu
 function caseInsensitivePropDescriptor<T>(target: T, prop: string): Object | undefined {
   const value = target.hasOwnProperty(prop.toLowerCase());
 
-  return value ? {
+  return value ? { // tslint:disable
     value,
     writable: true,
     enumerable: true,
     configurable: true,
-  } : undefined;
+  } : undefined; // tslint:enable
 }
