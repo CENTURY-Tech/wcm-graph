@@ -10,13 +10,13 @@ export interface IBaseDependencyMetadata {
   version: string;
 };
 
-export type IBaseGraphNodeObject = IGraphNode;
+export interface IBaseGraphNodeObject extends IGraphNode { };
 
-export type IBaseGraphRelationObject = IKeyValue<string>;
+export interface IBaseGraphRelationObject extends IKeyValue<string> { };
 
-export type IBaseGraphNodeMap = IKeyValue<IBaseGraphNodeObject>;
+export interface IBaseGraphNodeMap extends IKeyValue<IBaseGraphNodeObject> { };
 
-export type IBaseGraphRelationMap = IKeyValue<IBaseGraphRelationObject>;
+export interface IBaseGraphRelationMap extends IKeyValue<IBaseGraphRelationObject> { };
 
 /**
  * A base class responsible for weakmap initialisation. This ensures that upstream classes are able to use preprepared

@@ -172,4 +172,4 @@ function versionAlreadyExistsErr(name: string): (version: string) => never {
   };
 }
 
-export { AbstractBaseGraph, IBaseDependencyMetadata, AbstractInternalGraph };
+export { IBaseDependencyMetadata };

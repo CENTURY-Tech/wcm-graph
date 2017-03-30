@@ -26,7 +26,7 @@ describe("AbstractInternalGraph", () => {
 
       it("should add a node with the supplied data", () => {
         internalGraph.__addNode("foo", "bar");
-        deepEqual(nodesMap.get(internalGraph).foo, "bar");
+        deepEqual(internalGraph.__getNodes().foo, "bar");
       });
 
       it("should fail to add a node with the same name twice", () => {

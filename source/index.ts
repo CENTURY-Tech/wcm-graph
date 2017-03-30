@@ -1,9 +1,9 @@
 import { compose, contains, map, prop, toPairs, unnest } from "ramda";
 import { DependencyJson, IDependencyOptions, listInstalledDependencies, readDependenciesJson } from "./lib/filesystem/filesystem"; // tslint:disable-line
-import { AbstractBaseGraph, DependencyGraph, IBaseDependencyMetadata } from "./lib/graph/graph";
+import { DependencyGraph, IBaseDependencyMetadata } from "./lib/graph/graph";
 import { firstDefinedProperty } from "./lib/utilities/utilities";
 
-const nodeNameFrom = AbstractBaseGraph.stringifyDependencyMetadata;
+const nodeNameFrom = DependencyGraph.stringifyDependencyMetadata;
 
 /**
  * An asynchronous function that will prepare and return a dependency graph representing the inter-dependencies within
