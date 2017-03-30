@@ -14,14 +14,14 @@ export interface IGraphNode {
  *
  * @private
  */
-export const __nodes = new WeakMap(); // tslint:disable-line
+export const nodesMap = new WeakMap(); // tslint:disable-line
 
 export function getNodes(key: any): IKeyValue<IGraphNode> {
-  return makeCaseInsensitive(__nodes.get(key));
+  return makeCaseInsensitive(nodesMap.get(key));
 }
 
 export function setNodes(key: any, value: any): void {
-  __nodes.set(key, value);
+  nodesMap.set(key, value);
 }
 
 /**
@@ -29,12 +29,12 @@ export function setNodes(key: any, value: any): void {
  *
  * @private
  */
-export const __relations = new WeakMap(); // tslint:disable-line
+export const relationsMap = new WeakMap(); // tslint:disable-line
 
 export function getRelations(key: any): IKeyValue<IKeyValue<string>> {
-  return makeCaseInsensitive(__relations.get(key));
+  return makeCaseInsensitive(relationsMap.get(key));
 }
 
 export function setRelations(key: any, value: any): void {
-  __relations.set(key, value);
+  relationsMap.set(key, value);
 }

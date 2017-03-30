@@ -1,5 +1,5 @@
 import { compose, contains, map, prop, toPairs, unnest } from "ramda";
-import { DependencyJson, IDependencyOptions, listInstalledDependencies, readDependenciesJson } from "./lib/filesystem/filesystem";
+import { DependencyJson, IDependencyOptions, listInstalledDependencies, readDependenciesJson } from "./lib/filesystem/filesystem"; // tslint:disable-line
 import { BaseGraph, DependencyGraph, IBaseDependencyMetadata } from "./lib/graph/graph";
 import { firstDefinedProperty } from "./lib/utilities/utilities";
 
@@ -42,7 +42,7 @@ export async function generateDeclaredDependenciesGraph(opts: IDependencyOptions
  *
  * @returns {Promise<DependencyGraph>} A dependency graph listing the runtime dependencies within the project
  */
-export async function generateImportedDependenciesGraph(projectPath: string, entryPath: string): Promise<DependencyGraph> {
+export async function generateImportedDependenciesGraph(projectPath: string, entryPath: string): Promise<DependencyGraph> { // tslint:disable-line
   "use strict";
 
   return Promise.resolve(new DependencyGraph());
@@ -119,7 +119,7 @@ function getDependencyMetadata(dependencyJson: DependencyJson): IBaseDependencyM
  * @returns {String[][]} The child dependencies as an array of arrays of strings
  */
 function getAllDependencyPairs(dependencyGraph: DependencyGraph): string[][] {
-  return compose(unnest, map(compose(getDependencyPairs, dependencyGraph.getDependencyData)))(dependencyGraph.listAllRealDependencies());
+  return compose(unnest, map(compose(getDependencyPairs, dependencyGraph.getDependencyData)))(dependencyGraph.listAllRealDependencies()); // tslint:disable-line
 }
 
 function getDependencyPairs(dependencyJson: DependencyJson): string[][] {
@@ -130,5 +130,5 @@ generateDeclaredDependenciesGraph({
   packageManager: "bower",
   projectPath: "/Users/iain.reid/git_repositories/webapp-learn",
 })
-  .then((graph) => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4)))
-  .catch((err) => console.log(err));
+  .then((graph) => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4))) // tslint:disable-line
+  .catch((err) => console.log(err)); // tslint:disable-line

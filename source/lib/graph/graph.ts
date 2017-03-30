@@ -136,7 +136,7 @@ export class DependencyGraph extends InternalGraph {
    * @returns {Object} A key value store of real depedencies node names and their declared versions
    */
   public listDependantsOfDependency(name: string): IKeyValue<string> {
-    return compose<any, any, any, any>(map(pick(["name", "version"])), map(this.getDependencyData), this.__listDependants)(name);
+    return compose<any, any, any, any>(map(pick(["name", "version"])), map(this.getDependencyData), this.__listDependants)(name); // tslint:disable-line
   }
 
   /**
