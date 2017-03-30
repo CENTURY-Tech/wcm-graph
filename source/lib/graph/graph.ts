@@ -1,16 +1,14 @@
 import { compose, contains, curry, has, ifElse, map, path, pick, prop, when } from "ramda";
 import { IKeyValue, makeCaseInsensitive, pushToArray } from "../utilities/utilities";
-import { BaseGraph, IBaseDependencyMetadata } from "./base/base";
-import { getNode, InternalGraph } from "./internal/internal";
-import { getNodes, getRelations } from "./storage/nodes";
+import { AbstractBaseGraph, AbstractInternalGraph, IBaseDependencyMetadata } from "./abstract/abstract";
 
 /**
  * A class built to manage the data relating to inter-dependencies in a project.
  *
  * @class
- * @extends InternalGraph
+ * @extends AbstractInternalGraph
  */
-export class DependencyGraph extends InternalGraph {
+export class DependencyGraph extends AbstractInternalGraph {
 
   /**
    * Add a real dependency to the depedency graph with the dependency name provided and mark the version provided as the
@@ -58,18 +56,20 @@ export class DependencyGraph extends InternalGraph {
    * @returns {Any} Any data stored against the depedency node with the name provided
    */
   public getDependencyData(name: string): any {
-    return (x: string) => prop("data", this.__getNode(name));
+    return prop("data", this.__getNode(name));
   }
 
   /**
    * Retrieve the metadata for the real depedency node with the name provided.
+   *
+   * @todo Improve this method by use Ramdas "project" method
    *
    * @param {String} name - The name of the depedency node
    *
    * @returns {IBaseDependencyMetadata} An object containing the metadata for the depedency node with the name provided
    */
   public getDependencyMetadata(name: string): IBaseDependencyMetadata {
-    return ({ name, version: prop<string>("version", this.__getNode(name)) });
+    return { name, version: prop<string>("version", this.__getNode(name)) };
   }
 
   /**
@@ -81,8 +81,8 @@ export class DependencyGraph extends InternalGraph {
    *
    * @returns {String} A version string for the real depedency node with the name provided
    */
-  public getDependencyVersion(name: string): any {
-    return prop("version", this.__getNode(name));
+  public getDependencyVersion(name: string): string {
+    return prop<string>("version", this.__getNode(name));
   }
 
   /**
@@ -95,7 +95,7 @@ export class DependencyGraph extends InternalGraph {
    * @returns {String[]} A list of registered aliases for the real depedency node with the name provided
    */
   public getDependencyAliases(name: string): string[] {
-    return path<string[]>([name, "aliases"], getNodes(this));
+    return prop<string[]>("aliases", this.__getNode(name));
   }
 
   /**
@@ -172,4 +172,4 @@ function versionAlreadyExistsErr(name: string): (version: string) => never {
   };
 }
 
-export { BaseGraph, IBaseDependencyMetadata, InternalGraph };
+export { AbstractBaseGraph, IBaseDependencyMetadata, AbstractInternalGraph };

@@ -1,13 +1,13 @@
 import { deepEqual, equal, ok, strictEqual, throws } from "assert";
-import { nodesMap, relationsMap } from "../storage/nodes";
-import { InternalGraph } from "./internal";
+import { nodesMap, relationsMap } from "../../storage/storage";
+import { AbstractInternalGraph } from "./internal";
 
-describe("InternalGraph", () => {
+describe("AbstractInternalGraph", () => {
   describe("Instance methods", () => {
-    let internalGraph: InternalGraph;
+    let internalGraph: AbstractInternalGraph;
 
     beforeEach(() => {
-      internalGraph = new InternalGraph();
+      internalGraph = new AbstractInternalGraph();
     });
 
     /**
@@ -21,7 +21,7 @@ describe("InternalGraph", () => {
 
       it("should add a node with the supplied name", () => {
         internalGraph.__addNode("foo", null);
-        ok(nodesMap.has(internalGraph));
+        ok(nodesMap.get(internalGraph).foo !== undefined);
       });
 
       it("should add a node with the supplied data", () => {
@@ -116,7 +116,7 @@ describe("InternalGraph", () => {
       it("should add 'to' to the relations array of 'from'", () => {
         nodesMap.get(internalGraph).foo = "bar";
         nodesMap.get(internalGraph).bar = "baz";
-        relationsMap.get(internalGraph).foo = [];
+        relationsMap.get(internalGraph).foo = {};
         internalGraph.__markDependency("foo", "bar", null);
         deepEqual(relationsMap.get(internalGraph).foo, { bar: null });
       });
