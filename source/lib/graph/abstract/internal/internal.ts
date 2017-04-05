@@ -1,5 +1,7 @@
 import { contains, flip, has, ifElse, keys, map, mapObjIndexed, pickBy, prop, unless, when } from "ramda";
 import { IKeyValue } from "../../../utilities/utilities";
+import { getNode, getNodes, nodeExists, setNode } from "../../storage/nodes/nodes";
+import { getRelation, getRelations, relationExists, setRelation } from "../../storage/relations/relations";
 import { AbstractBaseGraph, IBaseGraphNodeObject, IBaseGraphRelationObject } from "../base/base";
 
 /**
@@ -19,11 +21,11 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Void}
    */
-  public __addNode(name: string, data: IBaseGraphNodeObject): void {
+  public addInternalNode(name: string, data: IBaseGraphNodeObject): void {
     when(nodeExists(this), nodeAlreadyExistsErr)(name);
 
-    this.__getNodes()[name] = data;
-    this.__getRelations()[name] = {};
+    setNode(this)(name, data);
+    setRelation(this)(name, {});
   }
 
   /**
@@ -34,7 +36,7 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Any} Any data stored against the graph at the node with the name provided
    */
-  public __getNode(name: string): IBaseGraphNodeObject {
+  public getInternalNode(name: string): IBaseGraphNodeObject {
     return ifElse(nodeExists(this), getNode(this), noNodeFoundErr)(name);
   }
 
@@ -45,7 +47,7 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Boolean} Whether or not the graph has a node with the name provided
    */
-  public __hasNode(name: string): boolean {
+  public hasInternalNode(name: string): boolean {
     return nodeExists(this)(name);
   }
 
@@ -54,8 +56,8 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {String[]} An array of node names that have been previously added to the graph
    */
-  public __listNodes(): string[] {
-    return keys(this.__getNodes());
+  public listInternalNodes(): string[] {
+    return keys(getNodes(this));
   }
 
   /**
@@ -68,7 +70,7 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Void}
    */
-  public __markDependency(from: string, to: string, data: any): void {
+  public markInternalDependency(from: string, to: string, data: any): void {
     map(unless(nodeExists(this), noNodeFoundErr))([from, to]);
 
     getRelation(this)(from)[to] = data;
@@ -82,7 +84,7 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Boolean} Whether or not a relationship exists from the 'from' node to the 'to' node
    */
-  public __hasDependency(from: string, to: string): boolean {
+  public hasInternalDependency(from: string, to: string): boolean {
     return relationExists(this)(from, to);
   }
 
@@ -93,7 +95,7 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Object} A map of node names and their relationship data that the node with the provided name relies on
    */
-  public __listDependencies(of: string): IBaseGraphRelationObject {
+  public listInternalDependencies(of: string): IBaseGraphRelationObject {
     return getRelation(this)(of);
   }
 
@@ -104,56 +106,10 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @returns {Object} A map of node names and their relationship data that rely on the node with the provided name
    */
-  public __listDependants(of: string): IBaseGraphRelationObject {
-    return mapObjIndexed<any, any>(prop(of), pickBy((y) => contains(of, keys(y)), this.__getRelations()));
+  public listInternalDependants(of: string): IBaseGraphRelationObject {
+    return mapObjIndexed<any, any>(prop(of), pickBy((y) => contains(of, keys(y)), getRelations(this)));
   }
 
-}
-
-/**
- * A curried method to retrieve the data stored against a node with a specific depedency name.
- *
- * @param {Any} scope - The scope against which the nodes are mapped
- *
- * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
- */
-export function getNode(scope: AbstractBaseGraph): (name: string) => IBaseGraphNodeObject {
-  return flip(prop)(scope.__getNodes());
-}
-
-/**
- * A curried method to check the existances of a node with a specific depedency name.
- *
- * @param {Any} scope - The scope against which the nodes are mapped
- *
- * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
- */
-export function nodeExists(scope: AbstractBaseGraph): (name: string) => boolean {
-  return flip(has)(scope.__getNodes());
-}
-
-/**
- * A curried method to retrieve the list of relations stored against a specific depedency name.
- *
- * @param {Any} scope - The scope against which the relations are mapped
- *
- * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
- */
-export function getRelation(scope: AbstractBaseGraph): (name: string) => IBaseGraphRelationObject {
-  return flip(prop)(scope.__getRelations());
-}
-
-/**
- * A curried method to check the existances of a relation between two nodes.
- *
- * @param {Any} scope - The scope against which the nodes are mapped
- *
- * @returns {Function} A method that will determine whether or not a relation between to nodes exists
- */
-export function relationExists(scope: AbstractBaseGraph): (from: string, to: string) => boolean {
-  return (a: string, b: string) => {
-    return contains(b, keys(getRelation(scope)(a)) || []);
-  };
 }
 
 /**

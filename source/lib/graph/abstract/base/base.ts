@@ -1,6 +1,7 @@
 import { compose, curry, fromPairs, join, split, transpose, values, zipObj } from "ramda";
 import { IKeyValue } from "../../../utilities/utilities";
-import { getNodes, getRelations, IGraphNode, setNodes, setRelations } from "../../storage/storage";
+import { IGraphNode, setNodes } from "../../storage/nodes/nodes";
+import { setRelations } from "../../storage/relations/relations";
 
 /**
  * An interface representing optional depedency metadata.
@@ -12,7 +13,7 @@ export interface IBaseDependencyMetadata {
 
 export interface IBaseGraphNodeObject extends IGraphNode { };
 
-export interface IBaseGraphRelationObject extends IKeyValue<string> { };
+export interface IBaseGraphRelationObject extends IKeyValue<number> { };
 
 export interface IBaseGraphNodeMap extends IKeyValue<IBaseGraphNodeObject> { };
 
@@ -55,24 +56,8 @@ export class AbstractBaseGraph {
   }
 
   constructor() {
-    this.__setNodes({});
-    this.__setRelations({});
-  }
-
-  public __getNodes(): IBaseGraphNodeMap {
-    return getNodes(this);
-  }
-
-  public __setNodes(value: IBaseGraphNodeMap): void {
-    setNodes(this, value);
-  }
-
-  public __getRelations(): IBaseGraphRelationMap {
-    return getRelations(this);
-  }
-
-  public __setRelations(value: IBaseGraphRelationMap): void {
-    setRelations(this, value);
+    setNodes(this, {});
+    setRelations(this, {});
   }
 
 }

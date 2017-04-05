@@ -1,6 +1,6 @@
 import { deepEqual, equal, ok, strictEqual, throws } from "assert";
 import { DependencyGraph } from "./graph";
-import { nodesMap } from "./storage/storage";
+import { nodesMap } from "./storage/nodes/nodes";
 
 describe("DependencyGraph", () => {
   describe("Instance methods", () => {
