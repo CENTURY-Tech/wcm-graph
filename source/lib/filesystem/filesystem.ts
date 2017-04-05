@@ -37,6 +37,15 @@ export interface IDependencyOptions {
  */
 export type DependencyJson = BowerJson | PackageJson;
 
+/**
+ * Read and parse the JSON file for the dependency located at the path provided.
+ *
+ * @param {Object} opts                - The project and package manager configuration object
+ * @param {String} opts.projectPath    - The full path to the project
+ * @param {String} opts.packageManager - The package manger used in the project
+ *
+ * @returns {Promise<DependencyJson>} The dependency JSON
+ */
 export function readDependenciesJson(opts: IDependencyOptions): DependencyReader<DependencyJson> | never {
   switch (opts.packageManager) {
     case "bower":
@@ -72,8 +81,9 @@ export async function readPackageJson(projectPath: string): Promise<PackageJson>
  * Scan the relevant dependencies directory, depending on which package manager has been declared, and return a list of
  * the installed dependencies.
  *
- * @param {String} projectPath    - The full path to the project
- * @param {String} packageManager - The package manger used in the project
+ * @param {Object} opts                - The project and package manager configuration object
+ * @param {String} opts.projectPath    - The full path to the project
+ * @param {String} opts.packageManager - The package manger used in the project
  *
  * @returns {Promise<String[]>} A list of installed dependencies
  */

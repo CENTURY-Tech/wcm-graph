@@ -9,8 +9,9 @@ const nodeNameFrom = DependencyGraph.stringifyDependencyMetadata;
  * An asynchronous function that will prepare and return a dependency graph representing the inter-dependencies within
  * the project at the path provided.
  *
- * @param {String} projectPath    - The full path to the project
- * @param {String} packageManager - The package manger used in the project
+ * @param {Object} opts                - The project and package manager configuration object
+ * @param {String} opts.projectPath    - The full path to the project
+ * @param {String} opts.packageManager - The package manger used in the project
  *
  * @returns {Promise<DependencyGraph>} A dependency graph describing the inter-dependencies within the project
  */
@@ -53,9 +54,10 @@ export async function generateImportedDependenciesGraph(projectPath: string, ent
  *
  * @private
  *
- * @param {DependencyGraph} dependencyGraph - The dependency graph to register against
- * @param {String}          projectPath     - The full path to the project
- * @param {String}          packageManager  - The package manger used in the project
+ * @param {DependencyGraph} dependencyGraph     - The dependency graph to register against
+ * @param {Object}          opts                - The project and package manager configuration object
+ * @param {String}          opts.projectPath    - The full path to the project
+ * @param {String}          opts.packageManager - The package manger used in the project
  *
  * @returns {Promise<Void>}
  */
@@ -87,8 +89,9 @@ async function registerImpliedDependencies(dependencyGraph: DependencyGraph): Pr
  *
  * @private
  *
- * @param {String} projectPath    - The full path to the project
- * @param {String} packageManager - The package manger used in the project
+ * @param {Object} opts                - The project and package manager configuration object
+ * @param {String} opts.projectPath    - The full path to the project
+ * @param {String} opts.packageManager - The package manger used in the project
  *
  * @returns {Promise<DependencyJson[]>} A list of the installed dependencies JSON files
  */
