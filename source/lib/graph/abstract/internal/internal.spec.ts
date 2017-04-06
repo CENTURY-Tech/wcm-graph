@@ -26,8 +26,8 @@ describe("AbstractInternalGraph", () => {
       });
 
       it("should add a node with the supplied data", () => {
-        internalGraph.addInternalNode("foo", "bar");
-        deepEqual(getNodes(internalGraph).foo, "bar");
+        internalGraph.addInternalNode("foo", { name: "foo" });
+        deepEqual(getNodes(internalGraph).foo, { name: "foo" });
       });
 
       it("should fail to add a node with the same name twice", () => {
@@ -48,9 +48,8 @@ describe("AbstractInternalGraph", () => {
       });
 
       it("should return data stored against the node name supplied", () => {
-        nodesMap.get(internalGraph).foo = "bar";
-        internalGraph.getInternalNode("foo");
-        equal(internalGraph.getInternalNode("foo"), "bar");
+        nodesMap.get(internalGraph).foo = { name: "foo" };
+        deepEqual(internalGraph.getInternalNode("foo"), { name: "foo" });
       });
 
       it("should fail when a node has not been added", () => {
@@ -69,7 +68,7 @@ describe("AbstractInternalGraph", () => {
       });
 
       it("should return 'true' when a node is found with the name supplied", () => {
-        nodesMap.get(internalGraph).foo = "bar";
+        nodesMap.get(internalGraph).foo = { name: "foo" };
         equal(internalGraph.hasInternalNode("foo"), true);
       });
 
@@ -87,8 +86,8 @@ describe("AbstractInternalGraph", () => {
       });
 
       it("should return a list of the previously added nodes", () => {
-        nodesMap.get(internalGraph).foo = "bar";
-        nodesMap.get(internalGraph).bar = "baz";
+        nodesMap.get(internalGraph).foo = { name: "foo" };
+        nodesMap.get(internalGraph).bar = { name: "bar" };
         deepEqual(internalGraph.listInternalNodes(), ["foo", "bar"]);
       });
     });
@@ -109,14 +108,14 @@ describe("AbstractInternalGraph", () => {
 
       it("should fail when the 'to' node has not been added", () => {
         throws(() => {
-          nodesMap.get(internalGraph).foo = "bar";
+          nodesMap.get(internalGraph).foo = { name: "foo" };
           internalGraph.markInternalDependency("foo", "bar", null);
         }, "No node with the name 'bar' has been added");
       });
 
       it("should add 'to' to the relations array of 'from'", () => {
-        nodesMap.get(internalGraph).foo = "bar";
-        nodesMap.get(internalGraph).bar = "baz";
+        nodesMap.get(internalGraph).foo = { name: "foo" };
+        nodesMap.get(internalGraph).bar = { name: "bar" };
         relationsMap.get(internalGraph).foo = {};
         internalGraph.markInternalDependency("foo", "bar", null);
         deepEqual(relationsMap.get(internalGraph).foo, { bar: null });
@@ -150,9 +149,9 @@ describe("AbstractInternalGraph", () => {
       });
 
       it("should return the dependencies of the 'of' node", () => {
-        relationsMap.get(internalGraph).foo = { bar: 1, baz: 2 };
-        relationsMap.get(internalGraph).baz = { bar: 3, foo: 4 };
-        deepEqual(internalGraph.listInternalDependencies("foo"), { bar: 1, baz: 2 });
+        relationsMap.get(internalGraph).foo = { bar: "1", baz: "2" };
+        relationsMap.get(internalGraph).baz = { bar: "3", foo: "4" };
+        deepEqual(internalGraph.listInternalDependencies("foo"), { bar: "1", baz: "2" });
       });
     });
 
@@ -165,9 +164,9 @@ describe("AbstractInternalGraph", () => {
       });
 
       it("should return the dependants of the 'of' node", () => {
-        relationsMap.get(internalGraph).foo = { bar: 1, baz: 2 };
-        relationsMap.get(internalGraph).baz = { bar: 3, foo: 4 };
-        deepEqual(internalGraph.listInternalDependants("bar"), { foo: 1, baz: 3 });
+        relationsMap.get(internalGraph).foo = { bar: "1", baz: "2" };
+        relationsMap.get(internalGraph).baz = { bar: "3", foo: "4" };
+        deepEqual(internalGraph.listInternalDependants("bar"), { foo: "1", baz: "3" });
       });
     });
   });

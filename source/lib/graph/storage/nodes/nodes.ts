@@ -5,6 +5,7 @@ import { IKeyValue, makeCaseInsensitive } from "../../../utilities/utilities";
  * An interface representing the structure of a node.
  */
 export interface IGraphNode {
+  name: string;
   data?: Object;
   version?: string;
   aliases?: string[];
@@ -29,6 +30,10 @@ export function getNode(key: Object): (name: string) => IGraphNode {
 }
 
 export function getNodes(key: Object): IKeyValue<IGraphNode> {
+  if (!nodesMap.has(key)) {
+    throw Error("No node map found for the provided key");
+  }
+
   return makeCaseInsensitive(nodesMap.get(key));
 }
 

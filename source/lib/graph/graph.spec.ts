@@ -40,7 +40,7 @@ describe("DependencyGraph", () => {
 
       it("should fail to add a node with the same name twice", () => {
         throws(() => {
-          nodesMap.get(dependencyGraph).foo = {};
+          nodesMap.get(dependencyGraph).foo = { name: "foo" };
           dependencyGraph.addRealDependency({ name: "foo", version: "1" }, null);
         }, "A node with the name 'foo' already exists");
       });
@@ -55,14 +55,14 @@ describe("DependencyGraph", () => {
       });
 
       it("should add an alias to the node with the name provided", () => {
-        nodesMap.get(dependencyGraph).foo = { aliases: [] };
+        nodesMap.get(dependencyGraph).foo = { name: "foo", aliases: [] };
         dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
         deepEqual(nodesMap.get(dependencyGraph).foo.aliases, ["1"]);
       });
 
       it("should fail to add a node with the same version twice", () => {
         throws(() => {
-          nodesMap.get(dependencyGraph).foo = { aliases: ["1"] };
+          nodesMap.get(dependencyGraph).foo = { name: "foo", aliases: ["1"] };
           dependencyGraph.addImpliedDependency({ name: "foo", version: "1" });
         }, "Version '1' has already been registed on node 'foo'");
       });

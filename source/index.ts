@@ -23,7 +23,7 @@ export async function generateDeclaredDependenciesGraph(opts: IDependencyOptions
   await registerDeclaredDependencies(dependencyGraph, opts);
   await registerImpliedDependencies(dependencyGraph);
 
-  for (let dependencyName of dependencyGraph.listAllRealDependencies()) {
+  for (let dependencyName of dependencyGraph.listDependencies()) {
     const dependencyData = dependencyGraph.getDependencyData(dependencyName);
 
     for (let [name, version] of toPairs<string, string>(dependencyData.dependencies)) {
@@ -122,7 +122,9 @@ function getDependencyMetadata(dependencyJson: DependencyJson): IBaseDependencyM
  * @returns {String[][]} The child dependencies as an array of arrays of strings
  */
 function getAllDependencyPairs(dependencyGraph: DependencyGraph): string[][] {
-  return compose(unnest, map(compose(getDependencyPairs, dependencyGraph.getDependencyData)))(dependencyGraph.listAllRealDependencies()); // tslint:disable-line
+  return compose(unnest, map(compose(getDependencyPairs, (dependencyName: string) => {
+    return dependencyGraph.getDependencyData(dependencyName);
+  })))(dependencyGraph.listDependencies());
 }
 
 function getDependencyPairs(dependencyJson: DependencyJson): string[][] {
@@ -133,5 +135,5 @@ generateDeclaredDependenciesGraph({
   packageManager: "bower",
   projectPath: "/Users/iain.reid/git_repositories/webapp-learn",
 })
-  .then((graph) => console.log(JSON.stringify(graph.listDependantsOfDependency("polymer"), null, 4))) // tslint:disable-line
+  .then((graph) => console.log(JSON.stringify(graph.listDependenciesOfDependency("ct-app-models"), null, 4))) // tslint:disable-line
   .catch((err) => console.log(err)); // tslint:disable-line

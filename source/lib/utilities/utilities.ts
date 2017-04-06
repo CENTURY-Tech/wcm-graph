@@ -1,4 +1,4 @@
-import { compose, CurriedFunction2, curry, head, intersection, keys, prop } from "ramda";
+import { compose, converge, curry, head, identity, intersection, keys, map, prop, zipObj } from "ramda";
 
 /**
  * An interface representing a generic key value store
@@ -34,6 +34,10 @@ export function pushToArray(arr: any[]): (value: any) => number {
   };
 }
 
+export function toObjectBy<T, U>(method: (x: T) => U): (arr: T[]) => IKeyValue<U> {
+  return converge(zipObj, [map(identity), map(method)]) as (arr: T[]) => IKeyValue<U>;
+}
+
 /**
  * Ensure that the getters and setters over the target object are case insensitive.
  *
@@ -49,6 +53,10 @@ export function makeCaseInsensitive<T>(target: T): T {
   }); // tslint:enable
 }
 
+export function pruneVersionString(version: string) {
+  return /(\*)|(\^|~|<|>|(<|>)=)?((\d.)?(\d.)?)?\d$/.exec(version)[0];
+}
+
 /**
  * Perform a case insensitive lookup on the target object.
  *
@@ -60,7 +68,7 @@ export function makeCaseInsensitive<T>(target: T): T {
  * @returns {Any} Any value found at the lower cased property lookup
  */
 function caseInsensitivePropGet(target: { [x: string]: any }, prop: string): any {
-  return target[prop.toLowerCase()];
+  return target[typeof prop === "string" ? prop.toLowerCase() : prop];
 }
 
 /**
@@ -75,7 +83,7 @@ function caseInsensitivePropGet(target: { [x: string]: any }, prop: string): any
  * @returns {Boolean} A success value after setting the property
  */
 function caseInsensitivePropSet(target: { [x: string]: any }, prop: string, value: any): boolean {
-  target[prop.toLowerCase()] = value;
+  target[typeof prop === "string" ? prop.toLowerCase() : prop] = value;
 
   return true;
 }
@@ -91,12 +99,12 @@ function caseInsensitivePropSet(target: { [x: string]: any }, prop: string, valu
  * @returns {Object} A property descriptor
  */
 function caseInsensitivePropDescriptor<T>(target: T, prop: string): Object | undefined {
-  const value = target.hasOwnProperty(prop.toLowerCase());
+  prop = typeof prop === "string" ? prop.toLowerCase() : prop;
 
-  return value ? { // tslint:disable
-    value,
+  return target.hasOwnProperty(prop) ? { // tslint:disable
+    value: (<any>target)[prop],
     writable: true,
     enumerable: true,
     configurable: true,
-  } : undefined; // tslint:enable
+  } : undefined;
 }

@@ -4,7 +4,7 @@ import { IKeyValue, makeCaseInsensitive } from "../../../utilities/utilities";
 /**
  * An interface representing the structure of a node.
  */
-export interface IGraphRelationship extends IKeyValue<number> { };
+export interface IGraphRelationship extends IKeyValue<string> { };
 
 /**
  * A weakmap of the depedency graph relations.
@@ -25,6 +25,10 @@ export function getRelation(key: Object): (name: string) => IGraphRelationship {
 }
 
 export function getRelations(key: Object): IKeyValue<IGraphRelationship> {
+  if (!relationsMap.has(key)) {
+    throw Error("No relation map found for the provided key");
+  }
+
   return makeCaseInsensitive(relationsMap.get(key));
 }
 
@@ -51,7 +55,9 @@ export function relationExists(key: Object): (from: string, to: string) => boole
 export function setRelation(key: Object): (name: string, data: IGraphRelationship) => void {
   const relationMap = getRelations(key);
 
-  return (name: string, data: IGraphRelationship) => void (relationMap[name] = data);
+  return (name: string, data: IGraphRelationship) => {
+    void (relationMap[name] = data);
+  };
 }
 
 export function setRelations(key: Object, value: IKeyValue<IGraphRelationship>): void {

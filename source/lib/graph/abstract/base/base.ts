@@ -13,7 +13,7 @@ export interface IBaseDependencyMetadata {
 
 export interface IBaseGraphNodeObject extends IGraphNode { };
 
-export interface IBaseGraphRelationObject extends IKeyValue<number> { };
+export interface IBaseGraphRelationObject extends IKeyValue<string> { };
 
 export interface IBaseGraphNodeMap extends IKeyValue<IBaseGraphNodeObject> { };
 
@@ -30,8 +30,6 @@ export class AbstractBaseGraph {
   /**
    * A static method that will stringify key depedency metadata into a valid node name.
    *
-   * @function
-   *
    * @param {Object} opts      - The function options
    * @param {String} opts.name - The depedency name
    * @param {String} opts.name - the depedency version
@@ -44,8 +42,6 @@ export class AbstractBaseGraph {
 
   /**
    * A static method that will stringify a depedency name into a valid node name.
-   *
-   * @function
    *
    * @param {String} value - The stringified depedency metadata
    *

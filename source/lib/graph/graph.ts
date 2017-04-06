@@ -1,5 +1,5 @@
-import { compose, contains, curry, has, ifElse, map, path, pick, prop, when } from "ramda";
-import { IKeyValue, makeCaseInsensitive, pushToArray } from "../utilities/utilities";
+import { compose, contains, curry, fromPairs, has, ifElse, keys, map, path, pick, prop, when } from "ramda";
+import { IKeyValue, makeCaseInsensitive, pushToArray, toObjectBy } from "../utilities/utilities";
 import { AbstractBaseGraph, IBaseDependencyMetadata } from "./abstract/base/base";
 import { AbstractInternalGraph } from "./abstract/internal/internal";
 
@@ -15,8 +15,6 @@ export class DependencyGraph extends AbstractInternalGraph {
    * Add a real dependency to the depedency graph with the dependency name provided and mark the version provided as the
    * root version. Any extra data provided will be stored against the depedency node.
    *
-   * @function
-   *
    * @param {Object} opts         - The metadata relating to the depedency node
    * @param {String} opts.name    - The name of the depedency node
    * @param {String} opts.version - The version of the found depedency
@@ -25,14 +23,12 @@ export class DependencyGraph extends AbstractInternalGraph {
    * @returns {Void}
    */
   public addRealDependency({ name, version }: IBaseDependencyMetadata, data: any): void {
-    return this.addInternalNode(name, { data, version, aliases: [version] });
+    return this.addInternalNode(name, { name, data, version, aliases: [version] });
   }
 
   /**
    * Add an implied depedency to the depedency graph. Note that a real depedency with the same dependency name must have
    * been added prior to adding an implied depedency.
-   *
-   * @function
    *
    * @param {Object} opts         - The metadata relating to the depedency node
    * @param {String} opts.name    - The name of the depedency node
@@ -49,9 +45,16 @@ export class DependencyGraph extends AbstractInternalGraph {
   }
 
   /**
-   * Retrieve the data stored against the real depedency node with the name provided.
+   * Get a list of all of the dependencies currently registered with the depedency graph.
    *
-   * @function
+   * @returns {String[]} A list of names of the dependencies currently registered with the depedency graph
+   */
+  public listDependencies(): string[] {
+    return this.listInternalNodes();
+  }
+
+  /**
+   * Retrieve the data stored against the depedency node with the name provided.
    *
    * @param {String} name - The name of the depedency node
    *
@@ -62,9 +65,7 @@ export class DependencyGraph extends AbstractInternalGraph {
   }
 
   /**
-   * Retrieve the metadata for the real depedency node with the name provided.
-   *
-   * @function
+   * Retrieve the metadata for the depedency node with the name provided.
    *
    * @todo Improve this method by use Ramdas "project" method
    *
@@ -77,43 +78,38 @@ export class DependencyGraph extends AbstractInternalGraph {
   }
 
   /**
-   * Retrieve the declared version for the real depedency node with the name provided.
-   *
-   * @function
+   * Retrieve the declared version for the depedency node with the name provided.
    *
    * @param {String} name - The name of the depedency node
    *
-   * @returns {String} A version string for the real depedency node with the name provided
+   * @returns {String} A version string for the depedency node with the name provided
    */
   public getDependencyVersion(name: string): string {
     return prop<string>("version", this.getInternalNode(name));
   }
 
+  public getDependenciesVersionsMap(): IKeyValue<string> {
+    return toObjectBy((name: string) => this.getDependencyVersion(name))(this.listInternalNodes());
+  }
+
   /**
-   * Retrieve the list of the registered aliases for the real depedency node with the name provided.
-   *
-   * @function
+   * Retrieve the list of the registered aliases for the depedency node with the name provided.
    *
    * @param {String} name - The name of the depedency node
    *
-   * @returns {String[]} A list of registered aliases for the real depedency node with the name provided
+   * @returns {String[]} A list of registered aliases for the depedency node with the name provided
    */
   public getDependencyAliases(name: string): string[] {
     return prop<string[]>("aliases", this.getInternalNode(name));
   }
 
-  /**
-   * Get a list of all of the real dependencies currently registered with the depedency graph.
-   *
-   * @returns {String[]} A list of names of the real dependencies currently registered with the depedency graph
-   */
-  public listAllRealDependencies(): string[] {
-    return this.listInternalNodes();
+  public getDependenciesAliasesMap(): IKeyValue<string[]> {
+    return toObjectBy((name: string) => this.getDependencyAliases(name))(this.listInternalNodes());
   }
 
   /**
-   * Create a relationship from a real dependency node to a specific depedency alias. This alias may or may not point to
-   * a real depedency.
+   * Create a relationship from a dependency node to a specific depedency alias. This alias may or may not point to
+   * a depedency.
    *
    * @param {String} from       - The name of the dependant node`
    * @param {Object} to         - The metadata relating to the depedency node
@@ -127,38 +123,29 @@ export class DependencyGraph extends AbstractInternalGraph {
   }
 
   /**
-   * Retrieve a list of depedencies for the real dependency node with the name provided.
-   *
-   * @function
+   * Retrieve a map of dependants and their desired installed version for the dependency node with the name provided.
    *
    * @param {String} name - The name of the depedency node
    *
-   * @returns {Object} A key value store of real depedencies node names and their targeted aliases
+   * @returns {Object} A key value store of depedencies node names and their targeted aliases
    */
-  public listDependenciesOfDependency(name: string): IKeyValue<number> {
+  public listDependenciesOfDependency(name: string): IKeyValue<string> {
     return this.listInternalDependencies(name);
   }
 
   /**
-   * Retrieve a list of dependants for the real dependency node with the name provided.
-   *
-   * @function
+   * Retrieve a map of dependants and their desired installed version for the dependency node with the name provided
    *
    * @param {String} name - The name of the depedency node
    *
    * @returns {Object} A key value store of real depedencies node names and their declared versions
    */
   public listDependantsOfDependency(name: string): IKeyValue<string> {
-    const mapNameAndVersion = map(pick(["name", "version"]));
-    const mapDependencyData = map(this.getDependencyData);
-
-    return compose<any, any, any, any>(mapNameAndVersion, mapDependencyData, this.listInternalDependencies)(name);
+    return this.listInternalDependants(name);
   }
 
   /**
    * A curried method to check the existances of a node with a specific depedency name.
-   *
-   * @function
    *
    * @param {Any} scope - The scope against which the nodes are mapped
    *

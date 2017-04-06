@@ -1,4 +1,4 @@
-import { contains, flip, has, ifElse, keys, map, mapObjIndexed, pickBy, prop, unless, when } from "ramda";
+import { contains, ifElse, keys, map, mapObjIndexed, pickBy, prop, unless, when } from "ramda";
 import { IKeyValue } from "../../../utilities/utilities";
 import { getNode, getNodes, nodeExists, setNode } from "../../storage/nodes/nodes";
 import { getRelation, getRelations, relationExists, setRelation } from "../../storage/relations/relations";
@@ -34,7 +34,7 @@ export class AbstractInternalGraph extends AbstractBaseGraph {
    *
    * @param {String} name - The name of the node
    *
-   * @returns {Any} Any data stored against the graph at the node with the name provided
+   * @returns {IBaseGraphNodeObject} The data stored against the graph at the node with the name provided
    */
   public getInternalNode(name: string): IBaseGraphNodeObject {
     return ifElse(nodeExists(this), getNode(this), noNodeFoundErr)(name);
