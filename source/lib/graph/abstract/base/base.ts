@@ -11,12 +11,24 @@ export interface IBaseDependencyMetadata {
   version: string;
 };
 
+/**
+ * An interface representing a graph node.
+ */
 export interface IBaseGraphNodeObject extends IGraphNode { };
 
+/**
+ * An interface representing a relation node.
+ */
 export interface IBaseGraphRelationObject extends IKeyValue<string> { };
 
+/**
+ * An interface representing a map of graph nodes.
+ */
 export interface IBaseGraphNodeMap extends IKeyValue<IBaseGraphNodeObject> { };
 
+/**
+ * An interface representing a map of relation nodes.
+ */
 export interface IBaseGraphRelationMap extends IKeyValue<IBaseGraphRelationObject> { };
 
 /**
@@ -41,11 +53,11 @@ export class AbstractBaseGraph {
   }
 
   /**
-   * A static method that will stringify a depedency name into a valid node name.
+   * A static method that will parse a depedency name into a valid dependency metadata object.
    *
    * @param {String} value - The stringified depedency metadata
    *
-   * @returns {Object} A parsed depedency name
+   * @returns {IBaseDependencyMetadata} The parsed dependency metadata
    */
   public static parseDependencyMetadata(value: string): IBaseDependencyMetadata {
     return compose(zipObj(["name", "version"]) as (x: string[]) => IBaseDependencyMetadata, split(/@/))(value);

@@ -34,8 +34,17 @@ export function pushToArray(arr: any[]): (value: any) => number {
   };
 }
 
-export function toObjectBy<T, U>(method: (x: T) => U): (arr: T[]) => IKeyValue<U> {
-  return converge(zipObj, [map(identity), map(method)]) as (arr: T[]) => IKeyValue<U>;
+/**
+ * A curried method to generate an indexed object from an array of strings. This method will execute the function passed
+ * with the string found at each position in the array provided upon final execution, and map the returned value to the
+ * key in the final object with the relevant string.
+ *
+ * @param {Function} method - The function with which to create the objects values
+ *
+ * @returns {Function} A method that will return a new object whos values are equated from the method provided
+ */
+export function toObjectBy<U>(method: (x: string) => U): (arr: string[]) => IKeyValue<U> {
+  return converge(zipObj, [map(identity), map(method)]) as (arr: string[]) => IKeyValue<U>;
 }
 
 /**
@@ -53,7 +62,15 @@ export function makeCaseInsensitive<T>(target: T): T {
   }); // tslint:enable
 }
 
-export function pruneVersionString(version: string) {
+/**
+ * Prune any preceeding text from a version identifier, commonly found in Bower declaration files, and return the true
+ * version.
+ *
+ * @param {String} version - The version string to parse
+ *
+ * @returns {String} The true version from the string provided
+ */
+export function pruneVersionString(version: string): string {
   return /(\*)|(\^|~|<|>|(<|>)=)?((\d.)?(\d.)?)?\d$/.exec(version)[0];
 }
 

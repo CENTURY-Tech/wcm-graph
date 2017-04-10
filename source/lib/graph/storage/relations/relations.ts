@@ -16,7 +16,7 @@ export const relationsMap = new WeakMap<Object, IKeyValue<IGraphRelationship>>()
 /**
  * A curried method to retrieve the list of relations stored against a specific depedency name.
  *
- * @param {Any} key - The key against which the relations are mapped
+ * @param {Object} key - The key against which the relations are mapped
  *
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
@@ -24,6 +24,13 @@ export function getRelation(key: Object): (name: string) => IGraphRelationship {
   return flip(prop)(getRelations(key));
 }
 
+/**
+ * Retrieve all of the relations mapped to the key provided.
+ *
+ * @param {Object} key - The key against which the relations are mapped
+ *
+ * @returns {IKeyValue<IGraphRelationship>} A case insensitive map of relations related to the provied key
+ */
 export function getRelations(key: Object): IKeyValue<IGraphRelationship> {
   if (!relationsMap.has(key)) {
     throw Error("No relation map found for the provided key");
@@ -35,7 +42,7 @@ export function getRelations(key: Object): IKeyValue<IGraphRelationship> {
 /**
  * A curried method to check the existance of a relationship between the two nodes.
  *
- * @param {Any} key - The key against which the nodes are mapped
+ * @param {Object} key - The key against which the nodes are mapped
  *
  * @returns {Function} A method that will determine whether or not a relation between to nodes exists
  */
@@ -48,7 +55,7 @@ export function relationExists(key: Object): (from: string, to: string) => boole
 /**
  * A curried method to set the list of relations stored against a specific depedency name.
  *
- * @param {Any} key - The key against which the nodes are mapped
+ * @param {Object} key - The key against which the nodes are mapped
  *
  * @returns {Function} A method that will set the list of relations for a specific depedency name
  */
@@ -60,6 +67,14 @@ export function setRelation(key: Object): (name: string, data: IGraphRelationshi
   };
 }
 
+/**
+ * Initialise the relation map for the key provided with the value provided.
+ *
+ * @param {Object}                        key   - The key against which the relations are mapped
+ * @param {IKeyValue<IGraphRelationship>} value - The value to initialise the relation map with
+ *
+ * @returns {Void}
+ */
 export function setRelations(key: Object, value: IKeyValue<IGraphRelationship>): void {
   relationsMap.set(key, value);
 }
