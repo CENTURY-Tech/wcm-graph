@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: abstract/internal/internal.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: abstract/internal/internal.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const ramda_1 = require("ramda");
+const nodes_1 = require("../../storage/nodes/nodes");
+const relations_1 = require("../../storage/relations/relations");
+const base_1 = require("../base/base");
+/**
+ * An internal set of semi-private or hidden methods to simplify the construction of the depedency graph.
+ *
+ * @class
+ * @extends AbstractBaseGraph
+ */
+class AbstractInternalGraph extends base_1.AbstractBaseGraph {
+    /**
+     * Add a node with the name provided to the graph, with the data provided. If a node with the name provided already
+     * exists on the dependency an error will be thrown.
+     *
+     * @param {String} name - The name of the node
+     * @param {Any}    data - The data to map to the node
+     *
+     * @returns {Void}
+     */
+    addInternalNode(name, data) {
+        ramda_1.when(nodes_1.nodeExists(this), nodeAlreadyExistsErr)(name);
+        nodes_1.setNode(this)(name, data);
+        relations_1.setRelation(this)(name, {});
+    }
+    /**
+     * Retrieve the data relating to the node with the name provided. If no node exists with the name provided an error
+     * will be thrown.
+     *
+     * @param {String} name - The name of the node
+     *
+     * @returns {IBaseGraphNodeObject} The data stored against the graph at the node with the name provided
+     */
+    getInternalNode(name) {
+        return ramda_1.ifElse(nodes_1.nodeExists(this), nodes_1.getNode(this), noNodeFoundErr)(name);
+    }
+    /**
+     * Check to see whether or not the graph contains a node with the name provided.
+     *
+     * @param {String} name - The name of the node
+     *
+     * @returns {Boolean} Whether or not the graph has a node with the name provided
+     */
+    hasInternalNode(name) {
+        return nodes_1.nodeExists(this)(name);
+    }
+    /**
+     * Retrieve a list of the names for each node that has been previously added to the graph.
+     *
+     * @returns {String[]} An array of node names that have been previously added to the graph
+     */
+    listInternalNodes() {
+        return ramda_1.keys(nodes_1.getNodes(this));
+    }
+    /**
+     * Create a relationship from the node with the name provided as the first argument, to the node with the name
+     * provided as the second argument. If either of the names cannot be found in the nodes list an error will be thrown.
+     *
+     * @param {String} from - The name of the dependant
+     * @param {String} to   - The name of the dependency
+     * @param {Any}    data - The data to map to the relationship
+     *
+     * @returns {Void}
+     */
+    markInternalDependency(from, to, data) {
+        ramda_1.map(ramda_1.unless(nodes_1.nodeExists(this), noNodeFoundErr))([from, to]);
+        relations_1.getRelation(this)(from)[to] = data;
+    }
+    /**
+     * Check to see whether or not a relationship exists from the 'from' node to the 'to' node.
+     *
+     * @param {String} from - The name of the dependant
+     * @param {String} to   - The name of the dependency
+     *
+     * @returns {Boolean} Whether or not a relationship exists from the 'from' node to the 'to' node
+     */
+    hasInternalDependency(from, to) {
+        return relations_1.relationExists(this)(from, to);
+    }
+    /**
+     * Retrieve the list of nodes that the node with the provided name depends upon.
+     *
+     * @param {String} of - The name of the node
+     *
+     * @returns {Object} A map of node names and their relationship data that the node with the provided name relies on
+     */
+    listInternalDependencies(of) {
+        return relations_1.getRelation(this)(of);
+    }
+    /**
+     * Retrieve the list of nodes that rely upon the node with the provided name.
+     *
+     * @param {String} of - The name of the node
+     *
+     * @returns {Object} A map of node names and their relationship data that rely on the node with the provided name
+     */
+    listInternalDependants(of) {
+        return ramda_1.mapObjIndexed(ramda_1.prop(of), ramda_1.pickBy((y) => ramda_1.contains(of, ramda_1.keys(y)), relations_1.getRelations(this)));
+    }
+}
+exports.AbstractInternalGraph = AbstractInternalGraph;
+/**
+ * An error that will alert upstream consumers that a node with the depedency name provided has already been added to
+ * the graph.
+ *
+ * @param {String} name - The name of the node
+ *
+ * @returns {Never}
+ */
+function nodeAlreadyExistsErr(name) {
+    throw Error(`A node with the name '${name}' already exists`);
+}
+exports.nodeAlreadyExistsErr = nodeAlreadyExistsErr;
+/**
+ * An error that will alert upstream consumers that no node with the depedency name provided has been added to the
+ * graph.
+ *
+ * @param {String} name - The name of the node
+ *
+ * @returns {Never}
+ */
+function noNodeFoundErr(name) {
+    throw Error(`No node with the name '${name}' has been added`);
+}
+exports.noNodeFoundErr = noNodeFoundErr;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AbstractBaseGraph.html">AbstractBaseGraph</a></li><li><a href="AbstractInternalGraph.html">AbstractInternalGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getNode">getNode</a></li><li><a href="global.html#getNodes">getNodes</a></li><li><a href="global.html#getRelation">getRelation</a></li><li><a href="global.html#getRelations">getRelations</a></li><li><a href="global.html#makeCaseInsensitive">makeCaseInsensitive</a></li><li><a href="global.html#nodeAlreadyExistsErr">nodeAlreadyExistsErr</a></li><li><a href="global.html#nodeExists">nodeExists</a></li><li><a href="global.html#noNodeFoundErr">noNodeFoundErr</a></li><li><a href="global.html#pushToArray">pushToArray</a></li><li><a href="global.html#relationExists">relationExists</a></li><li><a href="global.html#setNode">setNode</a></li><li><a href="global.html#setNodes">setNodes</a></li><li><a href="global.html#setRelation">setRelation</a></li><li><a href="global.html#setRelations">setRelations</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Apr 10 2017 12:02:08 GMT+0100 (BST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

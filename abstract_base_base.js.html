@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: abstract/base/base.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,37 +17,63 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: abstract/base/base.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h2>Web Component Manifest Graph</h2><p>Dependency graph generator for WCM</p>
-<h3>Description</h3><p>A complex tree of dependencies underpins most single-page Web Applications, and it's important for developers to have the ability to ensure that the inter-dependencies within Third-Party modules are well defined and easily maintainable.</p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const ramda_1 = require("ramda");
+const nodes_1 = require("../../storage/nodes/nodes");
+const relations_1 = require("../../storage/relations/relations");
+;
+;
+;
+;
+;
+/**
+ * A base class responsible for weakmap initialisation. This ensures that upstream classes are able to use preprepared
+ * methods defined as properties that interface with the weakmaps.
+ *
+ * @class
+ */
+class AbstractBaseGraph {
+    /**
+     * A static method that will stringify key depedency metadata into a valid node name.
+     *
+     * @param {Object} opts      - The function options
+     * @param {String} opts.name - The depedency name
+     * @param {String} opts.name - the depedency version
+     *
+     * @returns {String} A stringified depedency name
+     */
+    static stringifyDependencyMetadata(opts) {
+        return ramda_1.compose(ramda_1.join("@"), ramda_1.values)(opts);
+    }
+    /**
+     * A static method that will parse a depedency name into a valid dependency metadata object.
+     *
+     * @param {String} value - The stringified depedency metadata
+     *
+     * @returns {IBaseDependencyMetadata} The parsed dependency metadata
+     */
+    static parseDependencyMetadata(value) {
+        return ramda_1.compose(ramda_1.zipObj(["name", "version"]), ramda_1.split(/@/))(value);
+    }
+    constructor() {
+        nodes_1.setNodes(this, {});
+        relations_1.setRelations(this, {});
+    }
+}
+exports.AbstractBaseGraph = AbstractBaseGraph;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

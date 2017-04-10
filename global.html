@@ -101,15 +101,14 @@
 
     
 
-    <h4 class="name" id="firstDefinedProperty"><span class="type-signature"></span>firstDefinedProperty<span class="signature">(props)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="getNode"><span class="type-signature"></span>getNode<span class="signature">(key)</span><span class="type-signature"> &rarr; {function}</span></h4>
 
     
 
 
 
 <div class="description">
-    Find and return the first defined property from within the list of provided properties from the object later
-provided.
+    A curried method to retrieve the data stored against a node with a specific dependency name.
 </div>
 
 
@@ -145,13 +144,13 @@ provided.
 
         <tr>
             
-                <td class="name"><code>props</code></td>
+                <td class="name"><code>key</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;String></span>
+<span class="param-type">Object</span>
 
 
             
@@ -161,7 +160,7 @@ provided.
 
             
 
-            <td class="description last">The properties to check if they are defined</td>
+            <td class="description last">The key against which the nodes are mapped</td>
         </tr>
 
     
@@ -202,7 +201,7 @@ provided.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_utilities_utilities.js.html">lib/utilities/utilities.js</a>, <a href="lib_utilities_utilities.js.html#line11">line 11</a>
+        <a href="storage_nodes_nodes.js.html">storage/nodes/nodes.js</a>, <a href="storage_nodes_nodes.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -229,7 +228,7 @@ provided.
 
         
 <div class="param-desc">
-    A method that will return the first defined property from the object provided
+    A method that will retrieve the data stored against a node with a specific depedency name
 </div>
 
 
@@ -255,15 +254,14 @@ provided.
 
     
 
-    <h4 class="name" id="generateDeclaredDependenciesGraph"><span class="type-signature"></span>generateDeclaredDependenciesGraph<span class="signature">(projectPath, packageManager)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="DependencyGraph.html">DependencyGraph</a>>}</span></h4>
+    <h4 class="name" id="getNodes"><span class="type-signature"></span>getNodes<span class="signature">(key)</span><span class="type-signature"> &rarr; {IKeyValue.&lt;IGraphNode>}</span></h4>
 
     
 
 
 
 <div class="description">
-    An asynchronous function that will prepare and return a dependency graph representing the inter-dependencies within
-the project at the path provided.
+    Retrieve all of the nodes mapped to the key provided.
 </div>
 
 
@@ -299,13 +297,13 @@ the project at the path provided.
 
         <tr>
             
-                <td class="name"><code>projectPath</code></td>
+                <td class="name"><code>key</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -315,30 +313,7 @@ the project at the path provided.
 
             
 
-            <td class="description last">The full path to the project</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>packageManager</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The package manger used in the project</td>
+            <td class="description last">The key against which the nodes are mapped</td>
         </tr>
 
     
@@ -379,7 +354,7 @@ the project at the path provided.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line24">line 24</a>
+        <a href="storage_nodes_nodes.js.html">storage/nodes/nodes.js</a>, <a href="storage_nodes_nodes.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -406,7 +381,7 @@ the project at the path provided.
 
         
 <div class="param-desc">
-    A dependency graph describing the inter-dependencies within the project
+    A case insensitive map of nodes related to the provied key
 </div>
 
 
@@ -417,7 +392,7 @@ the project at the path provided.
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;<a href="DependencyGraph.html">DependencyGraph</a>></span>
+<span class="param-type">IKeyValue.&lt;IGraphNode></span>
 
 
     </dd>
@@ -432,15 +407,14 @@ the project at the path provided.
 
     
 
-    <h4 class="name" id="generateImportedDependenciesGraph"><span class="type-signature"></span>generateImportedDependenciesGraph<span class="signature">(projectPath, entryPath)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="DependencyGraph.html">DependencyGraph</a>>}</span></h4>
+    <h4 class="name" id="getRelation"><span class="type-signature"></span>getRelation<span class="signature">(key)</span><span class="type-signature"> &rarr; {function}</span></h4>
 
     
 
 
 
 <div class="description">
-    An asynchronous function that will prepare and return a dependency graph representing the runtime dependencies within
-the project at the path provided.
+    A curried method to retrieve the list of relations stored against a specific depedency name.
 </div>
 
 
@@ -476,13 +450,13 @@ the project at the path provided.
 
         <tr>
             
-                <td class="name"><code>projectPath</code></td>
+                <td class="name"><code>key</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -492,30 +466,7 @@ the project at the path provided.
 
             
 
-            <td class="description last">The full path to the project</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>entryPath</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The path to the application root relative from the project root</td>
+            <td class="description last">The key against which the relations are mapped</td>
         </tr>
 
     
@@ -556,7 +507,7 @@ the project at the path provided.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line49">line 49</a>
+        <a href="storage_relations_relations.js.html">storage/relations/relations.js</a>, <a href="storage_relations_relations.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -583,7 +534,7 @@ the project at the path provided.
 
         
 <div class="param-desc">
-    A dependency graph listing the runtime dependencies within the project
+    A method that will retrieve the list of relations for a specific depedency name
 </div>
 
 
@@ -594,7 +545,7 @@ the project at the path provided.
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;<a href="DependencyGraph.html">DependencyGraph</a>></span>
+<span class="param-type">function</span>
 
 
     </dd>
@@ -609,14 +560,14 @@ the project at the path provided.
 
     
 
-    <h4 class="name" id="listDirectoryChildren"><span class="type-signature"></span>listDirectoryChildren<span class="signature">(directoryPath)</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+    <h4 class="name" id="getRelations"><span class="type-signature"></span>getRelations<span class="signature">(key)</span><span class="type-signature"> &rarr; {IKeyValue.&lt;IGraphRelationship>}</span></h4>
 
     
 
 
 
 <div class="description">
-    Scan and retrieve a list of fully qualified paths for the children of the directory at the path provided.
+    Retrieve all of the relations mapped to the key provided.
 </div>
 
 
@@ -652,13 +603,13 @@ the project at the path provided.
 
         <tr>
             
-                <td class="name"><code>directoryPath</code></td>
+                <td class="name"><code>key</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -668,7 +619,7 @@ the project at the path provided.
 
             
 
-            <td class="description last">The full path to the directory to scan</td>
+            <td class="description last">The key against which the relations are mapped</td>
         </tr>
 
     
@@ -709,7 +660,7 @@ the project at the path provided.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_filesystem_filesystem.js.html">lib/filesystem/filesystem.js</a>, <a href="lib_filesystem_filesystem.js.html#line73">line 73</a>
+        <a href="storage_relations_relations.js.html">storage/relations/relations.js</a>, <a href="storage_relations_relations.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -736,7 +687,7 @@ the project at the path provided.
 
         
 <div class="param-desc">
-    A list of fully qualified paths for the children of the directory at the path provided
+    A case insensitive map of relations related to the provied key
 </div>
 
 
@@ -747,184 +698,7 @@ the project at the path provided.
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;String></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="listInstalledDependencies"><span class="type-signature"></span>listInstalledDependencies<span class="signature">(projectPath, packageManager)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;String>>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Scan the relevant dependencies directory, depending on which package manager has been declared, and return a list of
-the installed dependencies.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>projectPath</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The full path to the project</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>packageManager</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The package manger used in the project</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_filesystem_filesystem.js.html">lib/filesystem/filesystem.js</a>, <a href="lib_filesystem_filesystem.js.html#line55">line 55</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    A list of installed dependencies
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;Array.&lt;String>></span>
+<span class="param-type">IKeyValue.&lt;IGraphRelationship></span>
 
 
     </dd>
@@ -1039,7 +813,7 @@ the installed dependencies.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_utilities_utilities.js.html">lib/utilities/utilities.js</a>, <a href="lib_utilities_utilities.js.html#line37">line 37</a>
+        <a href="utilities_utilities.js.html">utilities/utilities.js</a>, <a href="utilities_utilities.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -1078,6 +852,459 @@ the installed dependencies.
     <dd>
         
 <span class="param-type">Proxy</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="nodeAlreadyExistsErr"><span class="type-signature"></span>nodeAlreadyExistsErr<span class="signature">(name)</span><span class="type-signature"> &rarr; {Never}</span></h4>
+
+    
+
+
+
+<div class="description">
+    An error that will alert upstream consumers that a node with the depedency name provided has already been added to
+the graph.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abstract_internal_internal.js.html">abstract/internal/internal.js</a>, <a href="abstract_internal_internal.js.html#line112">line 112</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Never</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="nodeExists"><span class="type-signature"></span>nodeExists<span class="signature">(key)</span><span class="type-signature"> &rarr; {function}</span></h4>
+
+    
+
+
+
+<div class="description">
+    A curried method to check the existances of a node with a specific depedency name.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The key against which the nodes are mapped</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage_nodes_nodes.js.html">storage/nodes/nodes.js</a>, <a href="storage_nodes_nodes.js.html#line44">line 44</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A method that will determine whether or not a node with the depedency name provided exists
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="noNodeFoundErr"><span class="type-signature"></span>noNodeFoundErr<span class="signature">(name)</span><span class="type-signature"> &rarr; {Never}</span></h4>
+
+    
+
+
+
+<div class="description">
+    An error that will alert upstream consumers that no node with the depedency name provided has been added to the
+graph.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the node</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abstract_internal_internal.js.html">abstract/internal/internal.js</a>, <a href="abstract_internal_internal.js.html#line124">line 124</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Never</span>
 
 
     </dd>
@@ -1192,7 +1419,7 @@ the installed dependencies.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_utilities_utilities.js.html">lib/utilities/utilities.js</a>, <a href="lib_utilities_utilities.js.html#line24">line 24</a>
+        <a href="utilities_utilities.js.html">utilities/utilities.js</a>, <a href="utilities_utilities.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -1241,6 +1468,809 @@ the installed dependencies.
 
 
         
+            
+
+    
+
+    <h4 class="name" id="relationExists"><span class="type-signature"></span>relationExists<span class="signature">(key)</span><span class="type-signature"> &rarr; {function}</span></h4>
+
+    
+
+
+
+<div class="description">
+    A curried method to check the existance of a relationship between the two nodes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The key against which the nodes are mapped</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage_relations_relations.js.html">storage/relations/relations.js</a>, <a href="storage_relations_relations.js.html#line44">line 44</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A method that will determine whether or not a relation between to nodes exists
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setNode"><span class="type-signature"></span>setNode<span class="signature">(key)</span><span class="type-signature"> &rarr; {function}</span></h4>
+
+    
+
+
+
+<div class="description">
+    A curried method to set the data stored against a node with a specific dependency name.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The key against which the nodes are mapped</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage_nodes_nodes.js.html">storage/nodes/nodes.js</a>, <a href="storage_nodes_nodes.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A method that will retrieve the data stored against a node with a specific depedency name
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setNodes"><span class="type-signature"></span>setNodes<span class="signature">(key, value)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Initialise the node map for the key provided with the value provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The key against which the nodes are mapped</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">IKeyValue.&lt;IGraphNode></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value to initialise the node map with</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage_nodes_nodes.js.html">storage/nodes/nodes.js</a>, <a href="storage_nodes_nodes.js.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setRelation"><span class="type-signature"></span>setRelation<span class="signature">(key)</span><span class="type-signature"> &rarr; {function}</span></h4>
+
+    
+
+
+
+<div class="description">
+    A curried method to set the list of relations stored against a specific depedency name.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The key against which the nodes are mapped</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage_relations_relations.js.html">storage/relations/relations.js</a>, <a href="storage_relations_relations.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A method that will set the list of relations for a specific depedency name
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setRelations"><span class="type-signature"></span>setRelations<span class="signature">(key, value)</span><span class="type-signature"> &rarr; {Void}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Initialise the relation map for the key provided with the value provided.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The key against which the relations are mapped</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">IKeyValue.&lt;IGraphRelationship></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value to initialise the relation map with</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage_relations_relations.js.html">storage/relations/relations.js</a>, <a href="storage_relations_relations.js.html#line72">line 72</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -1256,13 +2286,13 @@ the installed dependencies.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BaseGraph.html">BaseGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li><li><a href="InternalGraph.html">InternalGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#firstDefinedProperty">firstDefinedProperty</a></li><li><a href="global.html#generateDeclaredDependenciesGraph">generateDeclaredDependenciesGraph</a></li><li><a href="global.html#generateImportedDependenciesGraph">generateImportedDependenciesGraph</a></li><li><a href="global.html#listDirectoryChildren">listDirectoryChildren</a></li><li><a href="global.html#listInstalledDependencies">listInstalledDependencies</a></li><li><a href="global.html#makeCaseInsensitive">makeCaseInsensitive</a></li><li><a href="global.html#pushToArray">pushToArray</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AbstractBaseGraph.html">AbstractBaseGraph</a></li><li><a href="AbstractInternalGraph.html">AbstractInternalGraph</a></li><li><a href="DependencyGraph.html">DependencyGraph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getNode">getNode</a></li><li><a href="global.html#getNodes">getNodes</a></li><li><a href="global.html#getRelation">getRelation</a></li><li><a href="global.html#getRelations">getRelations</a></li><li><a href="global.html#makeCaseInsensitive">makeCaseInsensitive</a></li><li><a href="global.html#nodeAlreadyExistsErr">nodeAlreadyExistsErr</a></li><li><a href="global.html#nodeExists">nodeExists</a></li><li><a href="global.html#noNodeFoundErr">noNodeFoundErr</a></li><li><a href="global.html#pushToArray">pushToArray</a></li><li><a href="global.html#relationExists">relationExists</a></li><li><a href="global.html#setNode">setNode</a></li><li><a href="global.html#setNodes">setNodes</a></li><li><a href="global.html#setRelation">setRelation</a></li><li><a href="global.html#setRelations">setRelations</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Feb 15 2017 18:18:46 GMT+0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Apr 10 2017 12:02:08 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>
