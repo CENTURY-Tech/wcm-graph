@@ -2,7 +2,11 @@
   "name": "wcm-graph",
   "version": "0.0.0",
   "description": "Dependency graph generator for WCM",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "scripts": {
     "prebuild": "npm run lint",
     "build": "rm -rf dist && tsc",
@@ -12,9 +16,29 @@
     "pretest": "npm run build",
     "test": "mocha dist/**/*.spec.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "graph",
+    "wcm",
+    "web",
+    "components",
+    "web-components"
+  ],
+  "author": "Century TECH",
+  "contributors": [
+    {
+      "name": "Iain Reid",
+      "email": "iainreid382@gmail.com",
+      "url": "https://github.com/iainreid820"
+    }
+  ],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CENTURY-Tech/wcm-graph/issues"
+  },
+  "homepage": "https://github.com/CENTURY-Tech/wcm-graph#readme",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "fs-promise": "^1.0.0",
     "ramda": "^0.23.0"
