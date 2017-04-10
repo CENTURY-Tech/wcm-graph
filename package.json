@@ -16,6 +16,10 @@
     "pretest": "npm run build",
     "test": "mocha dist/**/*.spec.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CENTURY-Tech/wcm-graph.git"
+  },
   "keywords": [
     "graph",
     "wcm",
