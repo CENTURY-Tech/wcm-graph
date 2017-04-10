@@ -65,19 +65,6 @@ export class DependencyGraph extends AbstractInternalGraph {
   }
 
   /**
-   * Retrieve the metadata for the depedency node with the name provided.
-   *
-   * @todo Improve this method by use Ramdas "project" method
-   *
-   * @param {String} name - The name of the depedency node
-   *
-   * @returns {IBaseDependencyMetadata} An object containing the metadata for the depedency node with the name provided
-   */
-  public getDependencyMetadata(name: string): IBaseDependencyMetadata {
-    return { name, version: prop<string>("version", this.getInternalNode(name)) };
-  }
-
-  /**
    * Retrieve the declared version for the depedency node with the name provided.
    *
    * @param {String} name - The name of the depedency node
@@ -86,10 +73,6 @@ export class DependencyGraph extends AbstractInternalGraph {
    */
   public getDependencyVersion(name: string): string {
     return prop<string>("version", this.getInternalNode(name));
-  }
-
-  public getDependenciesVersionsMap(): IKeyValue<string> {
-    return toObjectBy((name: string) => this.getDependencyVersion(name))(this.listInternalNodes());
   }
 
   /**
@@ -101,10 +84,6 @@ export class DependencyGraph extends AbstractInternalGraph {
    */
   public getDependencyAliases(name: string): string[] {
     return prop<string[]>("aliases", this.getInternalNode(name));
-  }
-
-  public getDependenciesAliasesMap(): IKeyValue<string[]> {
-    return toObjectBy((name: string) => this.getDependencyAliases(name))(this.listInternalNodes());
   }
 
   /**
