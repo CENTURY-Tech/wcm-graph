@@ -1,7 +1,7 @@
-import { compose, contains, curry, fromPairs, has, ifElse, keys, map, path, pick, prop, when } from "ramda";
-import { IKeyValue, makeCaseInsensitive, pushToArray, toObjectBy } from "../utilities/utilities";
+import { contains, ifElse, prop } from "ramda";
 import { AbstractBaseGraph, IBaseDependencyMetadata } from "./abstract/base/base";
 import { AbstractInternalGraph } from "./abstract/internal/internal";
+import { IKeyValue, makeCaseInsensitive, pushToArray } from "./utilities/utilities";
 
 /**
  * A class built to manage the data relating to inter-dependencies in a project.

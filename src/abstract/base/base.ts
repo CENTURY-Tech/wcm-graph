@@ -1,7 +1,7 @@
 import { compose, curry, fromPairs, join, split, transpose, values, zipObj } from "ramda";
-import { IKeyValue } from "../../../utilities/utilities";
 import { IGraphNode, setNodes } from "../../storage/nodes/nodes";
 import { setRelations } from "../../storage/relations/relations";
+import { IKeyValue } from "../../utilities/utilities";
 
 /**
  * An interface representing optional depedency metadata.

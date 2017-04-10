@@ -1,5 +1,5 @@
 import { flip, has, prop } from "ramda";
-import { IKeyValue, makeCaseInsensitive } from "../../../utilities/utilities";
+import { IKeyValue, makeCaseInsensitive } from "../../utilities/utilities";
 
 /**
  * An interface representing the structure of a node.

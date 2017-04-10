@@ -1,7 +1,7 @@
 import { contains, ifElse, keys, map, mapObjIndexed, pickBy, prop, unless, when } from "ramda";
-import { IKeyValue } from "../../../utilities/utilities";
 import { getNode, getNodes, nodeExists, setNode } from "../../storage/nodes/nodes";
 import { getRelation, getRelations, relationExists, setRelation } from "../../storage/relations/relations";
+import { IKeyValue } from "../../utilities/utilities";
 import { AbstractBaseGraph, IBaseGraphNodeObject, IBaseGraphRelationObject } from "../base/base";
 
 /**
