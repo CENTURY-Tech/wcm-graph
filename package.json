@@ -1,5 +1,5 @@
 {
-  "name": "wcm-graph",
+  "name": "@ctek/wcm-graph",
   "version": "0.0.0",
   "description": "Dependency graph generator for WCM",
   "main": "dist/graph.js",
