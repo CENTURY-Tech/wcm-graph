@@ -1,6 +1,8 @@
-Web Component Manifest Graph
----
+# Web Component Manifest Graph
+
 Dependency graph generator for WCM
+
+[![npm](https://img.shields.io/npm/v/@ctek/wcm-graph.svg?style=flat-square)](https://www.npmjs.com/package/@ctek/wcm-graph)
 
 ### Description
 A complex tree of dependencies underpins most single-page Web Applications, and it's important for developers to have the ability to ensure that the inter-dependencies within Third-Party modules are well defined and easily maintainable.
