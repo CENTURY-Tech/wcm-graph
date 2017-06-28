@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "Dependency graph generator for WCM",
   "main": "dist/graph.js",
-  "typings": "dist/graph.d.ts",
+  "types": "dist/graph.d.ts",
   "engines": {
     "node": ">=6.0.0"
   },
