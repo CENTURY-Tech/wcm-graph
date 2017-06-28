@@ -5,7 +5,7 @@ import { compose, converge, curry, head, identity, intersection, keys, map, prop
  */
 export interface IKeyValue<T> {
   [x: string]: T;
-};
+}
 
 /**
  * Push a single element to the array provided and ensure that scope of the 'push' is correct.
@@ -27,7 +27,7 @@ export function pushToArray(arr: any[]): (value: any) => number {
  *
  * @return {Proxy} A proxy over the target object ensuring that the getters and setters are case insensitive
  */
-export function makeCaseInsensitive<T>(target: T): T {
+export function makeCaseInsensitive<T extends object>(target: T): T {
   return new Proxy<T>(target, { // tslint:disable
     get: caseInsensitivePropGet,
     set: caseInsensitivePropSet,
@@ -76,7 +76,7 @@ function caseInsensitivePropSet(target: { [x: string]: any }, prop: string, valu
  *
  * @returns {Object} A property descriptor
  */
-function caseInsensitivePropDescriptor<T>(target: T, prop: string): Object | undefined {
+function caseInsensitivePropDescriptor<T>(target: T, prop: string): object | undefined {
   prop = typeof prop === "string" ? prop.toLowerCase() : prop;
 
   return target.hasOwnProperty(prop) ? { // tslint:disable

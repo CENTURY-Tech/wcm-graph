@@ -6,17 +6,17 @@ import { IKeyValue, makeCaseInsensitive } from "../../utilities/utilities";
  */
 export interface IGraphNode {
   name: string;
-  data?: Object;
+  data?: object;
   version?: string;
   aliases?: string[];
-};
+}
 
 /**
  * A weakmap of the depedency graph nodes.
  *
  * @private
  */
-export const nodesMap = new WeakMap<Object, IKeyValue<IGraphNode>>();
+export const nodesMap = new WeakMap<object, IKeyValue<IGraphNode>>();
 
 /**
  * A curried method to retrieve the data stored against a node with a specific dependency name.
@@ -25,7 +25,7 @@ export const nodesMap = new WeakMap<Object, IKeyValue<IGraphNode>>();
  *
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
-export function getNode(key: Object): (name: string) => IGraphNode {
+export function getNode(key: object): (name: string) => IGraphNode {
   return flip(prop)(getNodes(key));
 }
 
@@ -36,7 +36,7 @@ export function getNode(key: Object): (name: string) => IGraphNode {
  *
  * @returns {IKeyValue<IGraphNode>} A case insensitive map of nodes related to the provied key
  */
-export function getNodes(key: Object): IKeyValue<IGraphNode> {
+export function getNodes(key: object): IKeyValue<IGraphNode> {
   if (!nodesMap.has(key)) {
     throw Error("No node map found for the provided key");
   }
@@ -51,7 +51,7 @@ export function getNodes(key: Object): IKeyValue<IGraphNode> {
  *
  * @returns {Function} A method that will determine whether or not a node with the depedency name provided exists
  */
-export function nodeExists(key: Object): (name: string) => boolean {
+export function nodeExists(key: object): (name: string) => boolean {
   return flip(has)(getNodes(key));
 }
 
@@ -62,7 +62,7 @@ export function nodeExists(key: Object): (name: string) => boolean {
  *
  * @returns {Function} A method that will retrieve the data stored against a node with a specific depedency name
  */
-export function setNode(key: Object): (name: string, data: IGraphNode) => void {
+export function setNode(key: object): (name: string, data: IGraphNode) => void {
   const nodeMap = getNodes(key);
 
   return (name: string, data: IGraphNode) => void (nodeMap[name] = data);
@@ -76,6 +76,6 @@ export function setNode(key: Object): (name: string, data: IGraphNode) => void {
  *
  * @returns {Void}
  */
-export function setNodes(key: Object, value: IKeyValue<IGraphNode>): void {
+export function setNodes(key: object, value: IKeyValue<IGraphNode>): void {
   nodesMap.set(key, value);
 }
