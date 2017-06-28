@@ -9,27 +9,27 @@ import { IKeyValue } from "../../utilities/utilities";
 export interface IBaseDependencyMetadata {
   name: string;
   version: string;
-};
+}
 
 /**
- * An interface representing a graph node.
+ * An alias type representing a graph node.
  */
-export interface IBaseGraphNodeObject extends IGraphNode { };
+export type IBaseGraphNodeObject = IGraphNode;
 
 /**
- * An interface representing a relation node.
+ * An type representing a relation node.
  */
-export interface IBaseGraphRelationObject extends IKeyValue<string> { };
+export type IBaseGraphRelationObject = IKeyValue<string>;
 
 /**
- * An interface representing a map of graph nodes.
+ * An type representing a map of graph nodes.
  */
-export interface IBaseGraphNodeMap extends IKeyValue<IBaseGraphNodeObject> { };
+export type IBaseGraphNodeMap = IKeyValue<IBaseGraphNodeObject>;
 
 /**
- * An interface representing a map of relation nodes.
+ * An type representing a map of relation nodes.
  */
-export interface IBaseGraphRelationMap extends IKeyValue<IBaseGraphRelationObject> { };
+export type IBaseGraphRelationMap = IKeyValue<IBaseGraphRelationObject>;
 
 /**
  * A base class responsible for weakmap initialisation. This ensures that upstream classes are able to use preprepared

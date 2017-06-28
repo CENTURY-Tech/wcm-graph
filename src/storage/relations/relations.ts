@@ -2,16 +2,16 @@ import { contains, flip, keys, prop } from "ramda";
 import { IKeyValue, makeCaseInsensitive } from "../../utilities/utilities";
 
 /**
- * An interface representing the structure of a node.
+ * An type representing the structure of a node.
  */
-export interface IGraphRelationship extends IKeyValue<string> { };
+export type IGraphRelationship = IKeyValue<string>;
 
 /**
  * A weakmap of the depedency graph relations.
  *
  * @private
  */
-export const relationsMap = new WeakMap<Object, IKeyValue<IGraphRelationship>>();
+export const relationsMap = new WeakMap<object, IKeyValue<IGraphRelationship>>();
 
 /**
  * A curried method to retrieve the list of relations stored against a specific depedency name.
@@ -20,7 +20,7 @@ export const relationsMap = new WeakMap<Object, IKeyValue<IGraphRelationship>>()
  *
  * @returns {Function} A method that will retrieve the list of relations for a specific depedency name
  */
-export function getRelation(key: Object): (name: string) => IGraphRelationship {
+export function getRelation(key: object): (name: string) => IGraphRelationship {
   return flip(prop)(getRelations(key));
 }
 
@@ -31,7 +31,7 @@ export function getRelation(key: Object): (name: string) => IGraphRelationship {
  *
  * @returns {IKeyValue<IGraphRelationship>} A case insensitive map of relations related to the provied key
  */
-export function getRelations(key: Object): IKeyValue<IGraphRelationship> {
+export function getRelations(key: object): IKeyValue<IGraphRelationship> {
   if (!relationsMap.has(key)) {
     throw Error("No relation map found for the provided key");
   }
@@ -46,7 +46,7 @@ export function getRelations(key: Object): IKeyValue<IGraphRelationship> {
  *
  * @returns {Function} A method that will determine whether or not a relation between to nodes exists
  */
-export function relationExists(key: Object): (from: string, to: string) => boolean {
+export function relationExists(key: object): (from: string, to: string) => boolean {
   return (a: string, b: string) => {
     return contains(b, keys(getRelation(key)(a)) || []);
   };
@@ -59,7 +59,7 @@ export function relationExists(key: Object): (from: string, to: string) => boole
  *
  * @returns {Function} A method that will set the list of relations for a specific depedency name
  */
-export function setRelation(key: Object): (name: string, data: IGraphRelationship) => void {
+export function setRelation(key: object): (name: string, data: IGraphRelationship) => void {
   const relationMap = getRelations(key);
 
   return (name: string, data: IGraphRelationship) => {
@@ -75,6 +75,6 @@ export function setRelation(key: Object): (name: string, data: IGraphRelationshi
  *
  * @returns {Void}
  */
-export function setRelations(key: Object, value: IKeyValue<IGraphRelationship>): void {
+export function setRelations(key: object, value: IKeyValue<IGraphRelationship>): void {
   relationsMap.set(key, value);
 }
