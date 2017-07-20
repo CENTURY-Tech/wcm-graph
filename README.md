@@ -1,4 +1,4 @@
-# Web Component Manager Graph
+# Web Components Manager Graph
 
 Dependency graph generator for [WCM](https://www.npmjs.com/package/@ctek/wcm)
 
